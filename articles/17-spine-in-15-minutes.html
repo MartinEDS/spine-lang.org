@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spine in 15 Minutes – Spine</title>
+  <meta name="description" content="A concrete walkthrough of Spine — what you write, what the compiler does with it, and what comes out the other end.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Spine in 15 Minutes – Spine">
+  <meta property="og:description" content="A concrete walkthrough of Spine — what you write, what the compiler does with it, and what comes out the other end.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/17-spine-in-15-minutes.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Spine in 15 Minutes – Spine">
+  <meta name="twitter:description" content="A concrete walkthrough of Spine — what you write, what the compiler does with it, and what comes out the other end.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/17-spine-in-15-minutes.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Spine in 15 Minutes",
+    "description": "A concrete walkthrough of Spine — what you write, what the compiler does with it, and what comes out the other end.",
+    "url": "https://spine-lang.org/articles/17-spine-in-15-minutes.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 18
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Spine in 15 Minutes</h1>
+      <div class="meta">Post 17 · Practical Introduction</div>
+    </header>
+
+    <p>The previous sixteen articles explain <em>why</em> Spine works the way it does. This article shows <em>what you write</em> and <em>what happens when you compile it</em>. No category theory. No proof theory. Just syntax, compiler behavior, and output.</p>
+
+    <h2>What Spine Is</h2>
+
+    <p>Spine is a language for describing systems — what things exist, how they can change, and what must always be true. The compiler reads those descriptions and produces two things: native code (via Zig) and verification artifacts (Z3, TLA+, mCRL2). You write one source file. The compiler decides which parts need runtime code and which parts need proofs.</p>
+
+    <h2>1. Data and Functions</h2>
+
+    <p>Spine has algebraic data types and pattern matching. If you know Haskell or ML, this will look familiar.</p>
+
+<pre><code>data Maybe a : Type where
+  Nothing : Maybe a
+  Just    : a -> Maybe a
+
+data List a : Type where
+  Nil  : List a
+  Cons : a -> List a -> List a
+
+record Person where
+  field name  : String
+  field age   : Nat
+  field email : String
+</code></pre>
+
+    <p>Functions use equation-style definitions with pattern matching:</p>
+
+<pre><code>factorial : Nat -> Nat
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
+
+add : Int -> Int -> Int
+add x y = x + y
+
+compose : (b -> c) -> (a -> b) -> a -> c
+compose f g x = f (g x)
+</code></pre>
+
+    <p>This compiles to Zig. A <code>record</code> becomes a Zig <code>struct</code>. A <code>data</code> becomes a tagged union. Pattern matching becomes branching. Here is an actual compiler output fragment — the lexer's token type, from <code>lexer.model</code>:</p>
+
+<pre><code>-- Source (lexer.model):
+enum TokenType =
+    INT | FLOAT | STRING | CHAR | BOOL
+  | DEF | LET | IN | IF | THEN | ELSE
+  | MATCH | CASE | OF | DATA | ENUM
+  | RECORD | TYPE | MODULE | WHERE
+  | IMPORT | EXPORT | EXTERNAL
+  | CLASS | INSTANCE | INDUCTIVE | FORALL
+  | PLUS | MINUS | STAR | SLASH ...
+
+record Token where
+  kind   : TokenType
+  value  : String
+  line   : Int
+  column : Int</code></pre>
+
+<pre><code>// Generated (lexer.zig):
+pub const TokenType = enum {
+    INT, FLOAT, STRING, CHAR, BOOL,
+    DEF, LET, IN, IF, THEN, ELSE,
+    MATCH, CASE, OF, DATA, ENUM,
+    RECORD, TYPE, MODULE, WHERE,
+    IMPORT, EXPORT, EXTERNAL,
+    CLASS, INSTANCE, INDUCTIVE, FORALL,
+    PLUS, MINUS, STAR, SLASH, ...
+};
+
+pub const Token = struct {
+    kind: TokenType,
+    value: []const u8,
+    line: i64,
+    column: i64,
+    length: i64,
+};</code></pre>
+
+    <p>The compiler that produced this Zig is itself written in Spine (145 modules). It compiles its own source through its own pipeline — that is what self-hosting means here.</p>
+
+    <h2>2. Effects</h2>
+
+    <p>Spine has algebraic effects. An effect declares operations; a handler says what those operations do.</p>
+
+<pre><code>effect State s where
+  get : State s s
+  put : s -> State s Unit
+
+effect Console where
+  readLine : Console String
+  printLine : String -> Console Unit
+
+effect Error e where
+  throw : e -> Error e a</code></pre>
+
+    <p>Handlers are separate from effect declarations:</p>
+
+<pre><code>handler constReader where
+  get _ k -> k 42
+  put _ k -> k ()</code></pre>
+
+    <p>Effects can carry correctness properties. These are not comments — the compiler extracts them for verification:</p>
+
+<pre><code>constraint GetPutLaw {
+  description: "get >>= put ≡ return ()"
+  predicate: "forall handler in StateHandler, s in State :
+    (perform get >>= \x -> perform (put x)) ≡ return Unit"
+}
+
+constraint PutPutLaw {
+  description: "put x >> put y ≡ put y"
+  predicate: "forall handler in StateHandler, x in s, y in s :
+    (perform (put x) >> perform (put y)) ≡ perform (put y)"
+}</code></pre>
+
+    <h2>3. Type Classes</h2>
+
+    <p>Type classes work as you would expect from Haskell, with one addition: Spine's type system is dependently typed, so class constraints can express richer properties.</p>
+
+<pre><code>class Eq a where
+  eq  : a -> a -> Bool
+  neq : a -> a -> Bool
+  neq x y := not (eq x y)
+
+class Functor f where
+  fmap : (a -> b) -> f a -> f b
+
+class Functor m => Monad m where
+  unit : a -> m a
+  bind : m a -> (a -> m b) -> m b</code></pre>
+
+<pre><code>instance Eq Color where
+  eq Red   Red   = true
+  eq Green Green = true
+  eq Blue  Blue  = true
+  eq _     _     = false</code></pre>
+
+    <h2>4. Behavior: State Machines</h2>
+
+    <p>This is where Spine diverges from general-purpose functional languages. A <code>behavior</code> block declares a state machine — states, transitions, guards, and message sends.</p>
+
+<pre><code>behavior ActorLifecycle where
+  state Spawned [initial]
+  state Ready
+  state Running
+  state Waiting
+  state Stopped [final]
+  state Crashed [final]
+
+  on Enqueue         : Spawned → Ready
+  on Schedule        : Ready → Running
+  on ProcessComplete : Running → Ready
+    guard (has_messages)
+  on ProcessComplete : Running → Waiting
+    guard (no_messages)
+  on Enqueue         : Waiting → Ready
+  on Shutdown        : Running → Stopped
+  on Shutdown        : Ready → Stopped
+  on Shutdown        : Waiting → Stopped
+  on Exception       : Running → Crashed</code></pre>
+
+    <p>This is the lifecycle of every actor in Spine's own runtime — the system models itself using its own syntax. Transitions can send messages to other state machines:</p>
+
+<pre><code>behavior Supervisor where
+  state Booting [initial]
+  state SpawningActors
+  state Running
+  state ShuttingDown
+  state Stopped [final]
+
+  on Start          : Booting → SpawningActors
+  on AllSpawned     : SpawningActors → Running
+  on ShutdownSignal : Running → ShuttingDown
+    send Registry.Shutdown
+    send Storage.Shutdown
+    send HTTP.Shutdown
+    send PG.Shutdown
+  on AllStopped     : ShuttingDown → Stopped</code></pre>
+
+    <p>The compiler translates behaviors into mCRL2 process algebra for model checking. Here is the actual generated output from a wafer processing example:</p>
+
+<pre><code>-- Source (groote_demo.model):
+behavior WaferCycleSpec where
+  state Idle [initial]
+  state Loading
+  state Aligning
+  state Exposing
+  state Measuring
+  state Unloading
+
+  on load    : Idle → Loading
+  on align   : Loading → Aligning
+  on expose  : Aligning → Exposing
+  on measure : Exposing → Measuring
+  on unload  : Measuring → Unloading
+  on done    : Unloading → Idle</code></pre>
+
+<pre><code>% Generated (groote_demo.mcrl2):
+sort State_WaferCycleSpec = struct
+  Idle | Loading | Aligning
+  | WCS_Exposing | WCS_Measuring | WCS_Unloading;
+
+act align, begin_measurement, check_quality,
+    coarse_align, cycle_done, done, eject_wafer,
+    end_expose, expose, fine_align, load,
+    load_wafer, measure, unload, verify_align;
+
+proc WaferCycleSpec(s: State_WaferCycleSpec) =
+  (s == Idle)           -> load . WaferCycleSpec(Loading) +
+  (s == Loading)        -> align . WaferCycleSpec(Aligning) +
+  (s == Aligning)       -> expose . WaferCycleSpec(WCS_Exposing) +
+  (s == WCS_Exposing)   -> measure . WaferCycleSpec(WCS_Measuring) +
+  (s == WCS_Measuring)  -> unload . WaferCycleSpec(WCS_Unloading) +
+  (s == WCS_Unloading)  -> done . WaferCycleSpec(Idle);</code></pre>
+
+    <p>The mCRL2 output is not a pretty-printed version of the source. It is a process algebra specification that the <a href="https://www.mcrl2.org/" rel="noopener">mCRL2 toolset</a> can model-check for deadlock freedom, liveness, and bisimulation equivalence.</p>
+
+    <h2>5. Catching Bugs: Simulation Refinement</h2>
+
+    <p>Suppose an engineer adds a shortcut — <code>skip_alignment</code> — that bypasses alignment and goes straight to exposure. The spec says alignment always precedes exposure. How does the compiler catch this?</p>
+
+    <p>The implementation declares the shortcut:</p>
+
+<pre><code>behavior WaferCycleImpl where
+  state WaitingForWafer [initial]
+  state PreAlignment
+  state FineAlignment
+  state AlignmentVerified
+  state PreExposure
+  state Exposing
+  ...
+
+  on load_wafer     : WaitingForWafer → PreAlignment
+  on coarse_align   : PreAlignment → FineAlignment
+    send Aligner.StartAlignment
+  on fine_align     : FineAlignment → AlignmentVerified
+  on skip_alignment : PreAlignment → PreExposure   -- the shortcut
+  on start_expose   : PreExposure → Exposing
+    send ExposureUnit.BeginExposure
+  ...</code></pre>
+
+    <p>You declare a refinement mapping between the implementation and the spec:</p>
+
+<pre><code>simulation WaferRefinement : WaferCycleImpl refines WaferCycleSpec where
+  map WaitingForWafer   = Idle
+  map PreAlignment      = Loading
+  map FineAlignment     = Aligning
+  map AlignmentVerified = Aligning
+  map PreExposure       = Aligning
+  map Exposing          = Exposing
+  ...
+
+  on load_wafer     : matches load
+  on coarse_align   : matches align
+  on fine_align     : internal
+  on skip_alignment : internal
+  on start_expose   : matches expose
+  ...</code></pre>
+
+    <p>The <code>skip_alignment</code> transition maps <code>PreAlignment → PreExposure</code>, which in spec-space maps <code>Loading → Aligning</code>. An <code>internal</code> transition (one with no spec counterpart) requires source and target to map to the <em>same</em> spec state. Loading ≠ Aligning. The simulation checker flags this as a refinement violation.</p>
+
+    <p>This check happens statically, through the generated mCRL2 model. The mCRL2 toolset verifies whether the implementation is a weak bisimulation of the spec. The shortcut breaks that relation.</p>
+
+    <h2>6. Spatial Structure</h2>
+
+    <p>Spine can model physical containment and topology using <code>region</code> blocks. This is relevant for systems where <em>where</em> something is affects what it can do.</p>
+
+<pre><code>region WaferStage where
+  sort equipment_sort
+
+region Aligner where
+  sort equipment_sort
+
+region ExposureUnit where
+  sort equipment_sort
+
+region LithoCell where
+  contains WaferStage, Aligner, ExposureUnit, MeasurementUnit
+  links control : ControlBus, wafer_in : WaferPort, wafer_out : WaferPort
+  sort machine_sort
+
+region CleanRoom where
+  contains LithoCell
+  links transport : TransportBus
+  sort facility_sort</code></pre>
+
+    <p>Spatial rewrites describe how the topology can change:</p>
+
+<pre><code>react add_litho_cell where
+  redex CleanRoom
+  reactum CleanRoom, LithoCell</code></pre>
+
+    <p>If a rewrite references a region that does not exist — say, <code>CoolingUnit</code> without a prior declaration — the compiler catches it. The spatial model compiles to <a href="https://uog-bigraph.bitbucket.io/index.html" rel="noopener">BigraphER</a> for topological verification.</p>
+
+    <h2>7. Temporal Properties and Z3 Laws</h2>
+
+    <p>Temporal claims and arithmetic laws live in the same source file as the rest of the system.</p>
+
+<pre><code>temporal StageStability where
+  always stage_locked_during_exposure
+  over WaferStage, ExposureUnit
+
+temporal WaferCompletion where
+  eventually wafer_processed
+  over LithoCell
+
+temporal LoadToMeasure where
+  wafer_loaded leads_to wafer_measured
+  over WaferStage, MeasurementUnit</code></pre>
+
+    <p>Temporal properties are compiled to TLA+ for model checking. Arithmetic laws go to Z3:</p>
+
+<pre><code>-- Z3 proves this:
+law wafer_throughput_positive :
+  ∀ (n : Int). n > 0 → n * 1 > 0
+
+-- Z3 refutes this:
+law bad_throughput_claim :
+  ∀ (x y : Int). x + y > x</code></pre>
+
+    <p>The compiler dispatches each claim to the appropriate solver. You do not write Z3 assertions or TLA+ specs by hand. You write Spine. The compiler decides what goes where.</p>
+
+    <h2>8. The Controlled Natural Language Surface</h2>
+
+    <p>Everything above uses Spine's functional syntax — the fragment closest to Haskell or ML. Spine also has a controlled natural language (CNL) surface for domain modeling:</p>
+
+<pre><code>Person has exactly 1 LastName.
+
+Engine is part of Car.
+
+it is obligatory that each Asset has at most 1 owner.
+
+it is forbidden that an Agent transfers an Asset it does not own.
+
+TransferRequested leads to TransferApproved.
+
+within jurisdiction NL, it is obligatory that asset transfers
+above 10000 EUR require notarial approval [BW Art. 3:89].</code></pre>
+
+    <p>This is not a separate language. The CNL surface is a <em>fragment</em> — a set of grammar rules that expand the parser's vocabulary. Internally, the sentence <code>Person has exactly 1 LastName</code> lowers to the same typed representation as a <code>record</code> field constraint. The deontic modalities (<code>obligatory</code>, <code>forbidden</code>, <code>permitted</code>) lower to temporal and constraint annotations that the compiler dispatches to the appropriate verifier.</p>
+
+    <p>The CNL exists because the people who know the domain rules — lawyers, engineers, compliance officers — do not write Haskell. The functional syntax and the CNL surface compile through the same pipeline to the same IR.</p>
+
+    <h2>How the Pieces Fit Together</h2>
+
+    <p>A single Spine source file can contain data declarations, functions, effects, behaviors, spatial structure, temporal properties, Z3 laws, and CNL facts. The compiler reads the file and does the following:</p>
+
+    <ol>
+      <li><strong>Parse</strong> all fragments. The parser handles functional syntax, behavior blocks, region blocks, temporal declarations, and CNL sentences.</li>
+      <li><strong>Lower</strong> everything to a shared intermediate representation — a graph of primitive operations.</li>
+      <li><strong>Partition</strong> the graph. Constraint subgraphs go to Z3. Temporal and behavioral subgraphs go to TLA+ and mCRL2. Spatial subgraphs go to BigraphER. The computational subgraph goes to Zig.</li>
+      <li><strong>Emit</strong> artifacts for each backend. The Zig output compiles to a native binary. The verification artifacts are checked by their respective tools.</li>
+    </ol>
+
+    <p>The compiler does not do all of this because it is clever. It does it because the IR makes partitioning a structural operation — different subgraphs, same graph.</p>
+
+    <h2>What Exists Today</h2>
+
+    <p>The compiler is self-hosting: 145 modules (lexer, parser, type checker, code generator, verification dispatch) written in Spine, compiled by the Spine compiler, producing Zig. The pipeline works for the functional fragment, behavior fragment, and constraint dispatch. The spatial and probabilistic backends are at an earlier stage.</p>
+
+    <p>Spine is not packaged for public use yet. This article and the <a href="index.html">article series</a> document the design. The <a href="https://discord.gg/wAAx6GMj">Discord</a> is the best place to ask questions or see updates.</p>
+
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>
