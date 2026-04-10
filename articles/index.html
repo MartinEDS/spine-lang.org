@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Articles – Spine</title>
+  <meta name="description" content="A series of articles exploring the design of the Spine programming language — from first principles to compilation.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Articles – Spine">
+  <meta property="og:description" content="A series of articles exploring the design of the Spine programming language — from first principles to compilation.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Articles – Spine">
+  <meta name="twitter:description" content="A series of articles exploring the design of the Spine programming language — from first principles to compilation.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "name": "Articles about Spine",
+    "description": "A series of articles exploring the design of the Spine programming language — from first principles to compilation.",
+    "url": "https://spine-lang.org/articles/",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html" class="active">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main class="blog-list index-page index-page-articles">
+  <div class="container">
+    <div class="page-header">
+      <div class="eyebrow">Language design series</div>
+      <h1>Articles about Spine</h1>
+      <p class="page-lead">A guided path through the language design, starting with the motivation and moving toward verification, compilation, and future directions.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="01-programming-reality.html">Programming Reality</a>
+      <div class="meta">Article 1 · Phase 1 — Vision</div>
+      <p class="excerpt">Why we need a language that unifies logic, facts, and effects.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="02-facts-as-first-class-citizens.html">Facts as First-Class Citizens</a>
+      <div class="meta">Article 2 · Phase 1</div>
+      <p class="excerpt">Why facts — not data structures — should be the foundation of system modeling.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="03-a-small-spine-program.html">A Small Spine Program</a>
+      <div class="meta">Article 3 · Phase 1</div>
+      <p class="excerpt">From facts to rules — describing valid transitions in the Asset System.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="04-effects-as-system-semantics.html">Effects as System Semantics</a>
+      <div class="meta">Article 4 · Phase 1</div>
+      <p class="excerpt">Making effects explicit, constrained, and meaningful within a system.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="05-dependent-types-and-real-world-systems.html">Dependent Types and Real-World Systems</a>
+      <div class="meta">Article 5 · Phase 2</div>
+      <p class="excerpt">Expressing guarantees about entire systems, not just individual values.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="06-facts-logic-and-effects.html">Facts, Logic, and Effects in One Language</a>
+      <div class="meta">Article 6 · Phase 2</div>
+      <p class="excerpt">What happens when structure, behavior, and correctness are no longer separate concerns.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="07-modeling-rules-that-depend-on-context.html">Modeling Rules That Depend on Context</a>
+      <div class="meta">Article 7 · Phase 2</div>
+      <p class="excerpt">When rules are not absolute — layered systems and contextual variation.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="08-time-space-and-uncertainty.html">Time, Space, and Uncertainty</a>
+      <div class="meta">Article 8 · Phase 2</div>
+      <p class="excerpt">How systems evolve over time, handle uncertainty, and depend on spatial structure.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="09-processes-and-concurrent-behavior.html">Processes and Concurrent Behavior</a>
+      <div class="meta">Article 9 · Phase 2</div>
+      <p class="excerpt">How Spine models concurrent processes — communication, synchronization, and behavioral equivalence as part of the system.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="10-spatial-structure-and-locality.html">Spatial Structure and Locality</a>
+      <div class="meta">Article 10 · Phase 2</div>
+      <p class="excerpt">How Spine models nesting, containment, and spatial relationships — where things are matters for what they can do.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="11-resources-and-ownership.html">Resources and Ownership</a>
+      <div class="meta">Article 11 · Phase 2</div>
+      <p class="excerpt">How Spine tracks resource usage through Quantitative Type Theory — linear facts, consumption, and compile-time accounting.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="12-universes-as-context.html">Universes as Context</a>
+      <div class="meta">Article 12 · Phase 3</div>
+      <p class="excerpt">Formalizing context through universes — how facts, rules, and effects acquire meaning within structured layers of interpretation.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="13-from-programs-to-proof-pipelines.html">From Programs to Proof Pipelines</a>
+      <div class="meta">Article 13 · Phase 3</div>
+      <p class="excerpt">How Spine integrates verification into compilation — Z3, TLA+, mCRL2, BigraphER, PRISM, and why checking is not a separate phase.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="14-from-spine-to-machine-code.html">From Spine to Machine Code</a>
+      <div class="meta">Article 14 · Phase 3 — Compilation</div>
+      <p class="excerpt">Following a Spine program from surface syntax through correspondence relations to compiled machine code via Zig.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="15-a-complete-spine-program-explained.html">A Complete Spine Program Explained</a>
+      <div class="meta">Article 16 · Phase 3 — Synthesis</div>
+      <p class="excerpt">A full walkthrough of a Spine program — facts, rules, effects, invariants, processes, spatial structure, resources, universes, verification, and compilation — all in one system.</p>
+    </div>
+
+    <div class="post-item">
+      <a href="16-future-directions-parsing-as-a-nondeterministic-effect.html">Future Directions: Parsing as a Nondeterministic Effect</a>
+      <div class="meta">Article 17 · Future Directions</div>
+      <p class="excerpt">How modeling parsing as a nondeterministic effect gives Spine something akin to a dynamic grammar — where what can be said depends on what has been said.</p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

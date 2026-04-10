@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regulatory Compliance as Code – Spine</title>
+  <meta name="description" content="Encode regulations as executable Spine specifications. Test existing systems against the rule spec. Update when regulations change and re-verify.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Regulatory Compliance as Code – Spine">
+  <meta property="og:description" content="Encode regulations as executable Spine specifications. Test existing systems against the rule spec. Update when regulations change and re-verify.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/use-cases/regulatory-compliance.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Regulatory Compliance as Code – Spine">
+  <meta name="twitter:description" content="Encode regulations as executable Spine specifications. Test existing systems against the rule spec. Update when regulations change and re-verify.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/use-cases/regulatory-compliance.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Regulatory Compliance as Code",
+    "description": "Encode regulations as executable Spine specifications. Test existing systems against the rule spec. Update when regulations change and re-verify.",
+    "url": "https://spine-lang.org/use-cases/regulatory-compliance.html",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="index.html" class="active">Use Cases</a>
+      <a href="../articles/index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Regulatory Compliance as Code</h1>
+      <div class="meta">Use Cases · Existing Systems</div>
+    </header>
+
+    <h2>The Problem</h2>
+
+    <p>Regulations are written in natural language. They are interpreted by legal teams, translated into requirements by analysts, and eventually implemented by developers. Each translation step introduces ambiguity. By the time the regulation becomes code, the connection between the rule and its implementation is tenuous.</p>
+
+    <p>When regulations change — and they always change — the process repeats. Someone must figure out which parts of the system are affected, what needs to change, and whether the changes introduce new violations. Audit preparation is expensive because nobody can point to a single artifact that says "this is what the system must do" in a way that is both precise and checkable.</p>
+
+    <p>This is the reality in financial services (Basel, MiFID), healthcare (HIPAA), data privacy (GDPR), and any domain where compliance is not optional.</p>
+
+    <h2>The Approach</h2>
+
+    <p>Write the regulations themselves as a Spine specification. Not the system — the rules. Express what the system <em>must</em> do, not what it <em>does</em> do.</p>
+
+    <p>This is a fundamentally different framing from the digital twin scenario. There, you model an existing system's behavior. Here, you model the regulatory constraints that any system must satisfy. The specification is the regulation, made executable.</p>
+
+    <p>Spine's fact-based modeling maps naturally to regulatory language. Regulations are about entities (accounts, patients, data subjects), relationships (owns, processes, resides in), and rules (must, must not, only if). These are facts, constraints, and effects — exactly what Spine is designed to express.</p>
+
+    <p>Spine's universe system is particularly relevant here. Regulations are inherently context-dependent: different jurisdictions, different entity types, different time periods may impose different rules. Universes let you model this layered context directly rather than embedding it in conditional branches.</p>
+
+    <h2>The Outcome</h2>
+
+    <p>You have an executable regulation — a Spine specification that encodes the rules and compiles to an executable that can be tested against your existing systems.</p>
+
+    <ul>
+      <li><strong>Compliance checking</strong> — feed scenarios to the regulation executable and the production system. Where they disagree, either the system is non-compliant or the specification needs refinement.</li>
+      <li><strong>Audit readiness</strong> — the specification is a machine-verified, human-readable artifact that maps directly to the regulation. Auditors can read it. Compilers can check it.</li>
+      <li><strong>Change management</strong> — when the regulation changes, update the specification. The compiler identifies which parts of the verification are affected. Re-verify.</li>
+    </ul>
+
+    <p>The specification becomes the single source of truth for what compliance means. It is more precise than a legal document, more readable than code, and more trustworthy than both because it is verified.</p>
+
+    <h2>The Workflow</h2>
+
+    <blockquote>
+      <p>Regulation (Natural Language) → Specification in Spine → Compile → Compliance Oracle → Test Existing Systems Against It</p>
+    </blockquote>
+
+    <p>When regulations change:</p>
+
+    <blockquote>
+      <p>Updated Regulation → Update Specification → Re-verify → Re-test Existing Systems</p>
+    </blockquote>
+
+    <p>The existing systems stay in place. The specification is a separate artifact that tests <em>them</em> — not the other way around.</p>
+
+    <h2>Why This Works</h2>
+
+    <p>Regulatory rules are precisely the kind of domain logic that Spine is built for. They are facts and constraints with explicit preconditions. They are context-dependent. They must be internally consistent. They have temporal dimensions — rules that apply after a certain date, transition periods, grandfathering clauses.</p>
+
+    <p>Spine's verification pipeline catches contradictions in the regulation specification itself — not just violations in the system. If two regulatory requirements conflict, the compiler will tell you before you try to implement either one.</p>
+
+    <p>And because the specification is versioned, auditable, and formally verified, it serves as evidence of compliance intent — a machine-checkable record of what the organization understood the regulation to require.</p>
+
+    <nav class="post-nav">
+      <a href="digital-twin.html">&larr; Digital Twin</a>
+      <a href="migration-oracle.html">Migration Oracle &rarr;</a>
+    </nav>
+
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

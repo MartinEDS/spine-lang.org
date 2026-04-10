@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spec-First Development – Spine</title>
+  <meta name="description" content="Write the specification in Spine first. Give it to your development team. They build in their chosen stack and test against the reference executable.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Spec-First Development – Spine">
+  <meta property="og:description" content="Write the specification in Spine first. Give it to your development team. They build in their chosen stack and test against the reference executable.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/use-cases/spec-first.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Spec-First Development – Spine">
+  <meta name="twitter:description" content="Write the specification in Spine first. Give it to your development team. They build in their chosen stack and test against the reference executable.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/use-cases/spec-first.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Spec-First Development",
+    "description": "Write the specification in Spine first. Give it to your development team. They build in their chosen stack and test against the reference executable.",
+    "url": "https://spine-lang.org/use-cases/spec-first.html",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="index.html" class="active">Use Cases</a>
+      <a href="../articles/index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Spec-First Development</h1>
+      <div class="meta">Use Cases · New Work</div>
+    </header>
+
+    <h2>The Problem</h2>
+
+    <p>Your organization needs a new application. The domain is complex — government compliance, logistics routing, billing rules, or any area where "what the system should do" is genuinely hard to pin down.</p>
+
+    <p>The traditional process: analysts write requirements in natural language, developers interpret them, and the gap between intent and implementation grows with every handoff. Acceptance criteria are subjective. Disputes about what was specified are resolved by whoever has the most authority, not the most clarity.</p>
+
+    <p>The development team is settled on a stack. They are good at it. You are not going to ask them to learn a new language. But you need a way to define what the system must do — precisely, unambiguously, and in a form that can be verified.</p>
+
+    <h2>The Approach</h2>
+
+    <p>Write the specification in Spine first, before the development team writes a line of code. The specification describes the domain rules, constraints, and expected behavior. It compiles to an executable — the reference implementation.</p>
+
+    <p>Hand the specification and the reference executable to the development team. They build the application in their chosen stack. They test their implementation against the reference: same inputs, compare outputs.</p>
+
+    <p>The specification is a living document. As requirements evolve, the specification is updated, re-verified, and recompiled. The reference executable updates with it. The development team always has a current, unambiguous definition of what they are building toward.</p>
+
+    <h2>The Outcome</h2>
+
+    <ul>
+      <li><strong>Unambiguous requirements</strong> — the specification is executable. There is no room for interpretation. If it compiles, it is internally consistent.</li>
+      <li><strong>Reference implementation</strong> — the Spine executable implements the spec. Not as a production system, but as the definitive answer to "what should this input produce?"</li>
+      <li><strong>A/B testing</strong> — the hand-built application is tested against the reference. Where they diverge, either the spec needs updating or the implementation has a bug. Both are actionable.</li>
+      <li><strong>Stack independence</strong> — the development team works in their tools. Java, Python, Go, TypeScript — the spec does not constrain the implementation language or architecture.</li>
+    </ul>
+
+    <p>The specification is the contract between what the organization wants and what the development team builds. It replaces ambiguous requirements documents with something that compiles.</p>
+
+    <h2>The Workflow</h2>
+
+    <blockquote>
+      <p>Domain Requirements → Specification in Spine → Compile → Reference Executable</p>
+    </blockquote>
+
+    <p>Then, in parallel:</p>
+
+    <blockquote>
+      <p>Development Team Builds in Stack X → A/B Test Against Reference → Iterate Until Match</p>
+    </blockquote>
+
+    <p>As requirements evolve:</p>
+
+    <blockquote>
+      <p>Updated Requirements → Update Specification → Re-verify → Recompile Reference → Re-test</p>
+    </blockquote>
+
+    <h2>Why This Works</h2>
+
+    <p>The specification eliminates the translation gap. What the organization wants is expressed in a language that is both human-readable and machine-verifiable. Developers do not need to learn Spine — they need to match its output.</p>
+
+    <p>The reference implementation settles disputes. When the development team asks "should this edge case return A or B?", the reference answers. Not an analyst, not a requirements document — the executable specification.</p>
+
+    <p>And because the specification is verified, the reference implementation is not just an opinion. It is a mathematically consistent implementation of the stated rules. If the rules are wrong, that is a requirements conversation. If the rules are right, the reference is right.</p>
+
+    <nav class="post-nav">
+      <a href="migration-oracle.html">&larr; Migration Oracle</a>
+      <a href="behavioral-contracts.html">Behavioral Contracts &rarr;</a>
+    </nav>
+
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

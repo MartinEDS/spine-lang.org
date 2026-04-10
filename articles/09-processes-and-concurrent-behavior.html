@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Processes and Concurrent Behavior – Spine</title>
+  <meta name="description" content="How Spine models concurrent processes — communication, synchronization, and behavioral equivalence as part of the system.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Processes and Concurrent Behavior – Spine">
+  <meta property="og:description" content="How Spine models concurrent processes — communication, synchronization, and behavioral equivalence as part of the system.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/09-processes-and-concurrent-behavior.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Processes and Concurrent Behavior – Spine">
+  <meta name="twitter:description" content="How Spine models concurrent processes — communication, synchronization, and behavioral equivalence as part of the system.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/09-processes-and-concurrent-behavior.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Processes and Concurrent Behavior",
+    "description": "How Spine models concurrent processes \u2014 communication, synchronization, and behavioral equivalence as part of the system.",
+    "url": "https://spine-lang.org/articles/09-processes-and-concurrent-behavior.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 9
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Processes and Concurrent Behavior</h1>
+      <div class="meta">Post 9 · Phase 2 — Behavior</div>
+    </header>
+
+    <p>So far, we have described systems as collections of facts, rules, effects, and invariants that evolve over time and under uncertainty.</p>
+
+    <p>But we have treated each system as a single, unified whole — one set of facts, one set of transitions.</p>
+
+    <p>Real systems are rarely so monolithic.</p>
+
+    <h2>Systems Are Made of Parts</h2>
+
+    <p>Consider our Asset System in practice.</p>
+
+    <p>There is not one agent performing one action at a time. There are multiple agents — buyers, sellers, regulators, automated services — each operating concurrently, each with their own view of the system.</p>
+
+    <p>A buyer initiates a transfer while a regulator reviews an audit. An automated service processes approvals while another agent updates asset metadata. These activities overlap in time, interact through shared state, and must coordinate to maintain consistency.</p>
+
+    <p>To model this faithfully, we need to think about <strong>processes</strong>.</p>
+
+    <h2>From Effects to Processes</h2>
+
+    <p>In earlier posts, effects described what actions are possible. A single effect like <code>TransferOwnership</code> represents one action within one transition.</p>
+
+    <p>A <strong>process</strong> is a richer concept: it describes a pattern of behavior over time — a sequence of actions, choices, and communications that an agent may perform.</p>
+
+    <p>For example:</p>
+
+    <ul>
+      <li>A buyer process: request transfer, wait for approval, receive confirmation or rejection</li>
+      <li>An approval process: receive request, check policy, respond with decision</li>
+      <li>An audit process: periodically inspect state, flag violations, report</li>
+    </ul>
+
+    <p>Each of these is a structured description of behavior — not a single action, but a pattern of interaction.</p>
+
+    <h2>Communication and Synchronization</h2>
+
+    <p>When multiple processes operate concurrently, they must communicate.</p>
+
+    <p>The buyer sends a transfer request. The approval service receives it, evaluates it, and sends a response. These two processes synchronize at the point of communication.</p>
+
+    <p>This is a fundamental concept from <strong>process algebra</strong>: systems are composed of processes that interact through channels, and the behavior of the whole emerges from the behavior of its parts.</p>
+
+    <p>In Spine, communication between processes is explicit and typed. A process that sends a transfer request must match a process that expects one. The types of messages, the ordering of interactions, and the conditions under which communication occurs are all part of the system's definition.</p>
+
+    <!-- Placeholder: Spine code example showing two communicating processes -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Nondeterminism and Choice</h2>
+
+    <p>Concurrent systems introduce a kind of nondeterminism that goes beyond uncertainty.</p>
+
+    <p>In a probabilistic system, outcomes have likelihoods. In a concurrent system, the order in which processes execute may be genuinely undetermined — not because of randomness, but because of scheduling, distribution, or independence.</p>
+
+    <p>A process may face a <strong>choice</strong>: accept a transfer request or handle a cancellation, whichever arrives first. The system must be correct regardless of which path is taken.</p>
+
+    <p>This requires reasoning about all possible interleavings of concurrent actions — not just one execution, but every way the processes might combine.</p>
+
+    <h2>Behavioral Equivalence</h2>
+
+    <p>Once processes are explicit, we can ask a powerful question: <em>do two processes behave the same way?</em></p>
+
+    <p>This is not about whether they have the same code. It is about whether, from the perspective of any observer, they produce the same interactions.</p>
+
+    <p>For example: a manual approval process and an automated one may behave identically — same inputs, same outputs, same ordering — even though their internal structure differs.</p>
+
+    <p>This notion of <strong>behavioral equivalence</strong> allows us to reason about substitution: if two processes are equivalent, one can replace the other without affecting the rest of the system.</p>
+
+    <p>This is directly relevant to refactoring, optimization, and evolving systems over time.</p>
+
+    <h2>Deadlock, Livelock, and Progress</h2>
+
+    <p>Concurrent systems bring specific failure modes that sequential systems do not have.</p>
+
+    <p><strong>Deadlock</strong>: two processes each wait for the other, and neither can proceed.</p>
+
+    <p><strong>Livelock</strong>: processes keep acting but make no progress toward a goal.</p>
+
+    <p><strong>Starvation</strong>: one process is perpetually denied access to a shared resource.</p>
+
+    <p>Because Spine makes processes and their interactions explicit, these properties become checkable. The system can verify that deadlock is impossible, that every process eventually makes progress, and that no agent is permanently excluded.</p>
+
+    <h2>Processes in the Asset System</h2>
+
+    <p>Let's extend our example.</p>
+
+    <p>We model the transfer workflow as a composition of processes:</p>
+
+    <ul>
+      <li>A <strong>transfer process</strong> that consumes an ownership fact and produces a new one</li>
+      <li>An <strong>approval process</strong> that gates the transfer based on policy</li>
+      <li>A <strong>notification process</strong> that informs affected parties</li>
+    </ul>
+
+    <p>These processes run concurrently. The transfer cannot complete until approval is granted. Notification happens after completion. The composition is explicit, and the system can verify that the overall workflow preserves all invariants.</p>
+
+    <!-- Placeholder: Spine code example showing process composition in the Asset System -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Connecting to Effects and Rules</h2>
+
+    <p>Processes do not replace effects — they organize them.</p>
+
+    <p>An effect is a single action. A process is a structured sequence of effects, choices, and communications. Rules still constrain what each effect can do. Invariants still hold across all transitions.</p>
+
+    <p>What processes add is the ability to describe how multiple agents coordinate their effects over time.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>With processes in place, the system gains another dimension.</p>
+
+    <p>We no longer describe a system as one evolving whole. We describe it as a <strong>composition of concurrent behaviors</strong> — each with its own structure, interacting through explicit channels, and collectively maintaining the system's properties.</p>
+
+    <p>This shifts the perspective once more: from what a system does, to how its parts work together.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>Processes describe how agents behave and interact. But they do not yet describe <em>where</em> things are.</p>
+
+    <p>In the next post, we will explore spatial structure: how processes, agents, and facts can be organized in space — nested, adjacent, or distributed — and how the structure of containment and proximity shapes what is possible.</p>
+
+    <div class="post-nav">
+      <a href="08-time-space-and-uncertainty.html">← Previous: Time, Space, and Uncertainty</a>
+      <a href="10-spatial-structure-and-locality.html">Next: Spatial Structure and Locality →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spine – Describe the system. The compiler verifies it.</title>
+  <meta name="description" content="Spine is a language for modeling systems as structured descriptions of what exists, what can change, and what must always be true — then compiling those descriptions to verified native code.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Spine – Describe the system. The compiler verifies it.">
+  <meta property="og:description" content="Spine is a language for modeling systems as structured descriptions of what exists, what can change, and what must always be true — then compiling those descriptions to verified native code.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://spine-lang.org/">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Spine – Describe the system. The compiler verifies it.">
+  <meta name="twitter:description" content="Spine is a language for modeling systems as structured descriptions of what exists, what can change, and what must always be true — then compiling those descriptions to verified native code.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Spine",
+    "url": "https://spine-lang.org",
+    "description": "Spine is a language for modeling systems as structured descriptions of what exists, what can change, and what must always be true — then compiling those descriptions to verified native code.",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://spine-lang.org/articles/",
+        "query-input": "required name=search_term_string"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="index.html" class="logo"><img src="img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="use-cases/index.html">Use Cases</a>
+      <a href="articles/index.html">Articles</a>
+      <a href="blog/index.html">Blog</a>
+      <a href="ai.html">AI</a>
+      <a href="governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="container">
+      <div class="eyebrow">Executable specifications for complex systems</div>
+      <h1>Describe the structure.<br>Define the rules.<br>The compiler does the rest.</h1>
+      <p class="subtitle">
+        Spine is a language for modeling systems — what exists, what can change,
+        and what must always be true — then compiling those descriptions
+        to verified native code.
+      </p>
+      <div class="cta">
+        <a href="articles/01-programming-reality.html" class="btn btn-primary">Read the Vision</a>
+        <a href="use-cases/index.html" class="btn btn-secondary">Explore Use Cases</a>
+      </div>
+      <div class="hero-links">
+        <a href="articles/index.html">Technical deep dive</a>
+        <a href="ai.html">Why this fits AI-assisted coding</a>
+        <a href="governance/index.html">Governance and ecosystem model</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Here -->
+  <section>
+    <div class="container">
+      <h2>Start Here</h2>
+      <div class="pillars">
+        <div class="pillar">
+          <h3>Evaluating practical fit</h3>
+          <p>Start with the <a href="use-cases/index.html">use cases</a> if you want to see how Spine fits existing teams, procurement, migrations, and compliance workflows.</p>
+        </div>
+        <div class="pillar">
+          <h3>Understanding the language</h3>
+          <p>Read the <a href="articles/index.html">16-part article series</a> if you want the design story from facts and effects through verification and compilation.</p>
+        </div>
+        <div class="pillar">
+          <h3>Assessing the long-term model</h3>
+          <p>Read the <a href="governance/index.html">governance documents</a> if you care about ecosystem boundaries, public standards, and anti-capture structure.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section>
+    <div class="container">
+      <h2>The problem</h2>
+      <p>Software today struggles to model the real world:</p>
+      <ul>
+        <li>Business rules live in documents, not code</li>
+        <li>Constraints are enforced by discipline, not by the language</li>
+        <li>Verification is an afterthought</li>
+        <li>State changes are hidden inside functions, invisible to analysis</li>
+      </ul>
+      <p>Spine is designed to fix this at the language level.</p>
+    </div>
+  </section>
+
+  <!-- Pillars -->
+  <section>
+    <div class="container">
+      <h2>What makes Spine different</h2>
+      <div class="pillars">
+        <div class="pillar">
+          <h3>Precise Types</h3>
+          <p>Types that express real constraints — not just "integer" or "string", but "a list of exactly <em>n</em> elements" or "an asset with exactly one owner." Powered by <a href="https://homotopytypetheory.org/">HoTT</a>-inspired foundations.</p>
+        </div>
+        <div class="pillar">
+          <h3>First-Class Reality Modeling</h3>
+          <p>Facts, processes, spatial structure, and probabilistic dimensions — not bolted on, built in.</p>
+        </div>
+        <div class="pillar">
+          <h3>Explicit State Changes</h3>
+          <p>Every action declares what must be true before it can happen, and what will be true afterward. No hidden mutations, no implicit side effects.</p>
+        </div>
+        <div class="pillar">
+          <h3>Verification as a Pipeline</h3>
+          <p><a href="https://github.com/Z3Prover/z3">Z3</a> for constraint solving, with <a href="https://lamport.azurewebsites.net/tla/tla.html">TLA+</a> and <a href="https://www.mcrl2.org/">mCRL2</a> artifact generation, and <a href="https://uog-bigraph.bitbucket.io/">BigraphER</a> and <a href="https://www.prismmodelchecker.org/">PRISM</a> support planned — verification integrated into compilation, not bolted on afterward.</p>
+        </div>
+        <div class="pillar">
+          <h3>Universes as Context</h3>
+          <p>Programs operate within structured contexts — jurisdictions, organizations, physical locations — that determine what rules apply.</p>
+        </div>
+        <div class="pillar">
+          <h3>Bidirectional Compilation</h3>
+          <p>The compiler uses FLP correspondence relations — bidirectional mappings between Spine and Zig — so every compilation step can be reversed and verified. The self-hosting compiler compiles all 145 modules through this pipeline.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section>
+    <div class="container">
+      <h2>How it works</h2>
+      <p>Spine programs are compiled through a verified pipeline:</p>
+      <div class="pipeline">
+        <span class="step">High-level logic &amp; facts</span>
+        <span class="arrow">→</span>
+        <span class="step">Validated IR with FLP correspondence</span>
+        <span class="arrow">→</span>
+        <span class="step">Verified transformations</span>
+        <span class="arrow">→</span>
+        <span class="step">Native machine code via <a href="https://ziglang.org/">Zig</a></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who it's for -->
+  <section>
+    <div class="container">
+      <h2>Who it's for</h2>
+      <ul>
+        <li>Safety-critical systems</li>
+        <li>Simulation &amp; digital twins</li>
+        <li>Scientific computing</li>
+        <li>Complex business domains</li>
+        <li>People who appreciate <a href="https://www.idris-lang.org/">Idris</a>, <a href="https://lean-lang.org/">Lean</a>, or <a href="https://koka-lang.github.io/">Koka</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Status -->
+  <section>
+    <div class="container">
+      <h2>Status</h2>
+      <div class="status-box">
+        <p>Spine is in active development. The compiler pipeline — surface syntax, validated IR, FLP correspondence relations, Zig backend — is taking shape. Categorical IR foundations are the design target.</p>
+        <p>Follow the technical journey on the <a href="articles/index.html">article series</a>, or read about <a href="ai.html">how Spine changes AI-assisted coding</a>.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

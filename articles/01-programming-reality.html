@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programming Reality – Spine</title>
+  <meta name="description" content="Why we need a language that unifies logic, facts, and effects.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Programming Reality – Spine">
+  <meta property="og:description" content="Why we need a language that unifies logic, facts, and effects.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/01-programming-reality.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Programming Reality – Spine">
+  <meta name="twitter:description" content="Why we need a language that unifies logic, facts, and effects.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/01-programming-reality.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Programming Reality",
+    "description": "Why we need a language that unifies logic, facts, and effects.",
+    "url": "https://spine-lang.org/articles/01-programming-reality.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 1
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Programming Reality</h1>
+      <div class="meta">Post 1 · Phase 1 — Vision</div>
+    </header>
+
+    <p>Most programming languages are built to describe algorithms — sequences of steps that transform data into results.</p>
+
+    <p>They are excellent at telling machines what to do.</p>
+
+    <p>But many systems we build today are not just algorithms. They are models of the real world.</p>
+
+    <p>They describe: who owns what, what is allowed to happen, how systems evolve over time, what must remain true — even as everything changes.</p>
+
+    <p>These concerns are often expressed outside of code: in documents, in diagrams, in informal rules, or in the heads of domain experts.</p>
+
+    <p>And as a result, a gap emerges between what a system is supposed to be and what the code actually does.</p>
+
+    <h2>Three Traditions</h2>
+
+    <p>There is no shortage of deep work addressing parts of this problem.</p>
+
+    <p><strong>Formal reasoning</strong>, exemplified by systems like <strong><a href="https://lean-lang.org/">Lean</a></strong>, shows how far we can push the ability to prove that a program meets its goals — that certain properties always hold and certain errors can never occur.</p>
+
+    <p><strong>Fact-based modeling</strong>, such as <strong><a href="https://www.orm.net/">Object-Role Modeling</a></strong> (ORM2), provides a way to describe a business problem in terms of relationships and constraints that are easy to understand and validate — structure, not algorithms.</p>
+
+    <p><strong>Explicit state changes</strong>, as explored in languages like <strong><a href="https://koka-lang.github.io/">Koka</a></strong>, demonstrate how the ways a system can change — what traditional developers might call transactions — can be made visible, composable, and tractable.</p>
+
+    <p>Each of these traditions is powerful in its own right.</p>
+
+    <p>But they largely exist in isolation: reasoning is separated from execution, modeling is separated from behavior, effects are separated from domain constraints.</p>
+
+    <h2>A Missing Layer</h2>
+
+    <p>What is still missing is a way to bring these perspectives together into a single system.</p>
+
+    <p>A system where:</p>
+    <ul>
+      <li>Facts describe the structure of a business problem</li>
+      <li>Constraints express what must always be true</li>
+      <li>Transitions describe how the system can evolve</li>
+    </ul>
+
+    <p>And where all of these can be executed, analyzed, and verified together.</p>
+
+    <p>This is the space Spine explores.</p>
+
+    <h2>What Is Spine?</h2>
+
+    <p>Spine is a programming language for modeling and constructing systems where correctness is not an afterthought.</p>
+
+    <p>It is built around a simple idea:</p>
+
+    <blockquote>Programs should describe not only what happens, but what must always be true as a system evolves.</blockquote>
+
+    <p>To support this, Spine brings together:</p>
+    <ul>
+      <li><strong>Fact-based modeling</strong>, inspired by <a href="https://www.orm.net/">Object-Role Modeling</a> — represent the possible states of the world, then talk about transitions</li>
+      <li><strong>Formal reasoning</strong>, in the spirit of <a href="https://lean-lang.org/">Lean</a> — prove that the program meets its goals</li>
+      <li><strong>Explicit state changes</strong>, following ideas explored in <a href="https://koka-lang.github.io/">Koka</a> — make every system transition visible and constrained</li>
+    </ul>
+
+    <p>But it does not aim to replace these systems.</p>
+
+    <p>Instead, it explores what happens when their ideas are combined, extended, and made executable.</p>
+
+    <h2>From Description to Execution</h2>
+
+    <p>In many systems today, there is a sharp boundary between modeling a problem, implementing behavior, and verifying correctness.</p>
+
+    <p>Spine attempts to blur this boundary.</p>
+
+    <p>A model is not just documentation. A rule is not just a comment. A constraint is not just an assumption.</p>
+
+    <p>They are all part of the program.</p>
+
+    <p>And because they are part of the program, they can be executed, checked, composed, and verified.</p>
+
+    <h2>A Different Perspective on State Changes</h2>
+
+    <p>In most programming languages, state changes answer the question: <em>"What does this function do?"</em></p>
+
+    <p>In Spine, the question shifts slightly: <em>"What kinds of changes are possible in this system?"</em></p>
+
+    <p>State changes are not just annotations on functions — they are part of how system behavior is described and constrained.</p>
+
+    <h2>A Note on Scope</h2>
+
+    <p>Spine is an ongoing exploration.</p>
+
+    <p>It draws from established ideas, but it does not claim to replace them. It is not a theorem prover, though it borrows from that world. It is not a modeling methodology, though it builds on one. It is not just an effect system, though effects play a central role.</p>
+
+    <p>Instead, it sits at their intersection.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>In the coming posts, we will explore:</p>
+    <ul>
+      <li>How facts can become first-class elements of a program</li>
+      <li>How effects interact with system constraints</li>
+      <li>How logic and execution can coexist</li>
+      <li>How real-world dimensions like time and uncertainty can be modeled directly</li>
+      <li>How programs can be compiled through a pipeline that includes formal verification</li>
+    </ul>
+
+    <p>The goal is not just to introduce a language, but to explore a different way of thinking about programs.</p>
+
+    <p>Not just as instructions for machines, but as structured descriptions of systems that must remain coherent over time.</p>
+
+    <div class="post-nav">
+      <span></span>
+      <a href="02-facts-as-first-class-citizens.html">Next: Facts as First-Class Citizens →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

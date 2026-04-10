@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Complete Spine Program Explained – Spine</title>
+  <meta name="description" content="A full walkthrough of a Spine program — facts, rules, effects, invariants, processes, spatial structure, resources, universes, verification, and compilation — all in one system.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="A Complete Spine Program Explained – Spine">
+  <meta property="og:description" content="A full walkthrough of a Spine program — facts, rules, effects, invariants, processes, spatial structure, resources, universes, verification, and compilation — all in one system.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/15-a-complete-spine-program-explained.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="A Complete Spine Program Explained – Spine">
+  <meta name="twitter:description" content="A full walkthrough of a Spine program — facts, rules, effects, invariants, processes, spatial structure, resources, universes, verification, and compilation — all in one system.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/15-a-complete-spine-program-explained.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "A Complete Spine Program Explained",
+    "description": "A full walkthrough of a Spine program \u2014 facts, rules, effects, invariants, processes, spatial structure, resources, universes, verification, and compilation \u2014 all in one system.",
+    "url": "https://spine-lang.org/articles/15-a-complete-spine-program-explained.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 16
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>A Complete Spine Program Explained</h1>
+      <div class="meta">Post 15 · Phase 3 — Synthesis</div>
+    </header>
+
+    <p>Over the past fourteen posts, we have introduced Spine's concepts one at a time: facts, rules, effects, invariants, time, probability, processes, spatial structure, resources, universes, verification, and compilation.</p>
+
+    <p>This post brings everything together in a single program.</p>
+
+    <p>We will build a <strong>governed asset system</strong> — a system where agents own assets, transfers are governed by rules, permissions depend on context, and the entire structure is verified and compiled. It is small enough to read in one sitting, but rich enough to exercise every major feature of the language.</p>
+
+    <h2>The Domain</h2>
+
+    <p>Our system tracks three kinds of entities:</p>
+
+    <ul>
+      <li><strong>Agents</strong> — people, organizations, or automated systems that can own things and perform actions.</li>
+      <li><strong>Assets</strong> — anything that can be owned, transferred, or composed into larger wholes.</li>
+      <li><strong>Capabilities</strong> — permissions that govern what actions an agent may take.</li>
+    </ul>
+
+    <p>Assets can be parts of other assets. Ownership can be transferred. Transfers require authorization. And the rules depend on <em>where</em> the system operates — a jurisdiction, an organization, a physical location.</p>
+
+    <h2>Step 1: Structural Facts</h2>
+
+    <p>We begin by declaring what exists and how things relate.</p>
+
+<pre><code># Entity Types
+Agent is an EntityType.
+Asset is an EntityType.
+Capability is an EntityType.
+
+# Agents
+Alice is an Agent.
+Bob is an Agent.
+TrustCorp is an Agent.
+
+# Assets
+Car is an Asset.
+Engine is an Asset.
+Wheel_FL is an Asset.
+Wheel_FR is an Asset.
+
+# Capabilities
+CanTransfer is a Capability.
+CanCompose is a Capability.
+CanApprove is a Capability.
+
+# Structural Facts
+Engine is part of Car.
+Wheel_FL is part of Car.
+Wheel_FR is part of Car.
+
+Alice owns Car.
+Alice has capability CanTransfer.
+Alice has capability CanCompose.
+Bob has capability CanTransfer.
+TrustCorp has capability CanApprove.
+
+Car is identified by ASSET-CAR-001.
+Engine is identified by ASSET-ENG-001.</code></pre>
+
+    <p>These declarations establish the vocabulary of the system. They say what kinds of things exist and what relationships are possible — nothing more. No behavior, no constraints, just structure.</p>
+
+    <p>This is the <a href="01-programming-reality.html">fact-oriented</a> foundation from the beginning of the series: we describe what <em>is</em> before we describe what <em>happens</em>.</p>
+
+    <h2>Step 2: Constraints</h2>
+
+    <p>Structure alone is too permissive. We add constraints — rules that the system must always satisfy.</p>
+
+<pre><code>it is obligatory that each Asset has at most 1 owner.
+it is obligatory that the part-of relation is acyclic.
+it is forbidden that an Agent transfers an Asset it does not own.</code></pre>
+
+     <p>These constraints are not runtime checks. They are part of the system's <a href="05-dependent-types-and-real-world-systems.html">logical definition</a>. The compiler proves they hold — or rejects the program.</p>
+
+    <h2>Step 3: Effects</h2>
+
+    <p>Now we add behavior. Effects describe what can happen — actions with preconditions and postconditions.</p>
+
+<pre><code>TransferOwnership emits OwnershipChange.
+TransferOwnership requires that the from_agent owns the asset.
+TransferOwnership requires that the from_agent has capability CanTransfer.
+TransferOwnership ensures that the to_agent owns the asset.
+TransferOwnership ensures that the from_agent no longer owns the asset.
+
+ComposeAsset emits CompositionChange.
+ComposeAsset requires that the agent owns the parent asset.
+ComposeAsset requires that the agent owns the child asset.
+ComposeAsset requires that the child asset is not part of any other asset.
+ComposeAsset ensures that the child asset is part of the parent asset.</code></pre>
+
+    <p>Effects are not functions that execute imperatively. They are <a href="04-effects-as-system-semantics.html">structured descriptions</a> of state transitions. The preconditions and postconditions are part of the definition — they determine when the effect can fire and what the world looks like afterward.</p>
+
+    <h2>Step 4: Resource Tracking</h2>
+
+    <p>Some facts in this system should not be duplicated or discarded silently. Ownership is a prime example: if an agent owns an asset, that fact is consumed when ownership transfers. It cannot be copied.</p>
+
+<pre><code>Owns is a linear fact.
+HasCapability is an unrestricted fact.</code></pre>
+
+    <p>This is <a href="11-resources-and-ownership.html">Quantitative Type Theory</a> at work. The compiler tracks how many times each fact is used. A linear fact must be consumed exactly once — you cannot accidentally duplicate ownership or forget to account for a transfer.</p>
+
+    <h2>Step 5: Processes</h2>
+
+    <p>The system is not a single thread of execution. Multiple agents act concurrently, and their actions may need to be coordinated.</p>
+
+<pre><code>TransferRequested leads to TransferApproved.
+TransferApproved leads to TransferCompleted.
+TransferRequested leads to TransferRejected.
+
+TransferApproval has probability 0.95.
+TransferTimeout has probability 0.02.
+
+AssetTransferProtocol guarantees that
+  TransferRequested leads to TransferCompleted.
+under fair scheduling of approvals, it is guaranteed that
+  TransferRequested leads to TransferApproved.</code></pre>
+
+    <p>These describe the temporal ordering of events, their probabilities, and the behavioral guarantees the system must satisfy. Under fair scheduling, every transfer request eventually reaches approval. The compiler can check these properties against the temporal model.</p>
+
+    <h2>Step 6: Spatial Structure</h2>
+
+    <p>Assets exist somewhere. An asset in a warehouse is different from the same asset in transit. The system tracks containment and locality.</p>
+
+<pre><code>Warehouse is a Location.
+TransitZone is a Location.
+Office is a Location.
+
+Warehouse is located in Amsterdam.
+Office is located in Amsterdam.
+Amsterdam is located in Netherlands.
+
+Car is located in Warehouse.
+
+it is obligatory that a transfer requires both agents in the same location,
+  or the asset in a TransitZone.</code></pre>
+
+    <p><a href="10-spatial-structure-and-locality.html">Spatial structure</a> is not metadata attached after the fact. It is part of the system's definition, and constraints can reference it directly. The compiler verifies spatial invariants — an asset cannot be in two places at once, and containment hierarchies remain consistent.</p>
+
+    <h2>Step 7: Universes</h2>
+
+    <p>The rules so far have been universal. But in practice, ownership rules differ by jurisdiction, and organizational policies add further constraints.</p>
+
+<pre><code>within jurisdiction NL, it is obligatory that
+  asset transfers above 10000 EUR require notarial approval
+  [BW Art. 3:89].
+
+within jurisdiction NL, it is obligatory that
+  vehicle transfers are registered with the RDW
+  [Wegenverkeerswet Art. 36].
+
+within jurisdiction EU, it is obligatory that
+  cross-border asset transfers are documented for customs
+  [EU Regulation 952/2013].</code></pre>
+
+    <p><a href="12-universes-as-context.html">Universes</a> layer context onto the system. The base facts and effects are defined once in the General universe. Jurisdictions add regulatory constraints. Organizations add policy. A program compiled for one universe inherits and specializes the rules of its parents.</p>
+
+    <h2>Step 8: Verification</h2>
+
+    <p>Before compilation, the system is verified. The compiler produces verification artifacts for external tools.</p>
+
+<pre><code>verify constraint SingleOwner via z3.
+verify temporal AssetTransferProtocol via tla+.
+verify process TransferOwnership via mcrl2.</code></pre>
+
+    <p>This is the <a href="13-from-programs-to-proof-pipelines.html">proof pipeline</a>. Each verification target extracts a different aspect of the same program: <a href="https://github.com/Z3Prover/z3">Z3</a> checks logical constraints (end-to-end working), <a href="https://lamport.azurewebsites.net/tla/tla.html">TLA+</a> checks temporal properties (artifact generation), <a href="https://www.mcrl2.org/">mCRL2</a> checks process behavior (artifact generation). Support for <a href="https://uog-bigraph.bitbucket.io/">BigraphER</a> (spatial invariants) and <a href="https://www.prismmodelchecker.org/">PRISM</a> (probabilistic bounds) is planned.</p>
+
+    <h2>Step 9: The Complete Program</h2>
+
+    <p>Here is the entire governed asset system, assembled from the pieces above.</p>
+
+<pre><code># Governed Asset System
+# A complete Spine program demonstrating facts, rules, effects,
+# constraints, spatial structure, temporal guarantees, and verification.
+
+# === Entity Types ===
+Agent is an EntityType.
+Asset is an EntityType.
+Capability is an EntityType.
+
+# === Agents ===
+Alice is an Agent.
+Bob is an Agent.
+TrustCorp is an Agent.
+
+# === Assets ===
+Car is an Asset.
+Engine is an Asset.
+Wheel_FL is an Asset.
+Wheel_FR is an Asset.
+
+# === Capabilities ===
+CanTransfer is a Capability.
+CanCompose is a Capability.
+CanApprove is a Capability.
+
+# === Structural Facts ===
+Engine is part of Car.
+Wheel_FL is part of Car.
+Wheel_FR is part of Car.
+
+Alice owns Car.
+Alice has capability CanTransfer.
+Alice has capability CanCompose.
+Bob has capability CanTransfer.
+TrustCorp has capability CanApprove.
+
+Car is identified by ASSET-CAR-001.
+Engine is identified by ASSET-ENG-001.
+
+# === Constraints ===
+it is obligatory that each Asset has at most 1 owner.
+it is obligatory that the part-of relation is acyclic.
+it is forbidden that an Agent transfers an Asset it does not own.
+
+# === Spatial Structure ===
+Warehouse is a Location.
+TransitZone is a Location.
+Office is a Location.
+
+Warehouse is located in Amsterdam.
+Office is located in Amsterdam.
+Amsterdam is located in Netherlands.
+
+Car is located in Warehouse.
+
+it is obligatory that a transfer requires both agents in the same location,
+  or the asset in a TransitZone.
+
+# === Temporal Structure ===
+TransferRequested leads to TransferApproved.
+TransferApproved leads to TransferCompleted.
+TransferRequested leads to TransferRejected.
+
+# === Effects ===
+TransferOwnership emits OwnershipChange.
+TransferOwnership requires that the from_agent owns the asset.
+TransferOwnership requires that the from_agent has capability CanTransfer.
+TransferOwnership ensures that the to_agent owns the asset.
+TransferOwnership ensures that the from_agent no longer owns the asset.
+
+ComposeAsset emits CompositionChange.
+ComposeAsset requires that the agent owns the parent asset.
+ComposeAsset requires that the agent owns the child asset.
+ComposeAsset requires that the child asset is not part of any other asset.
+ComposeAsset ensures that the child asset is part of the parent asset.
+
+# === Probabilities ===
+TransferApproval has probability 0.95.
+TransferTimeout has probability 0.02.
+
+# === Value Types ===
+AssetCode refines TextDomain by matching asset_code_pattern.
+PositiveValue refines DecimalDomain by satisfying greater_than_zero.
+
+# === Resource Tracking ===
+Owns is a linear fact.
+HasCapability is an unrestricted fact.
+
+# === Behavioral Guarantees ===
+AssetTransferProtocol guarantees that
+  TransferRequested leads to TransferCompleted.
+OwnershipTracking guarantees that each Asset has at most 1 owner.
+under fair scheduling of approvals, it is guaranteed that
+  TransferRequested leads to TransferApproved.
+
+# === Jurisdictional Rules ===
+within jurisdiction NL, it is obligatory that
+  asset transfers above 10000 EUR require notarial approval
+  [BW Art. 3:89].
+within jurisdiction NL, it is obligatory that
+  vehicle transfers are registered with the RDW
+  [Wegenverkeerswet Art. 36].
+within jurisdiction EU, it is obligatory that
+  cross-border asset transfers are documented for customs
+  [EU Regulation 952/2013].
+
+# === Verification Directives ===
+verify constraint SingleOwner via z3.
+verify temporal AssetTransferProtocol via tla+.
+verify process TransferOwnership via mcrl2.</code></pre>
+
+    <h2>Reading the Program</h2>
+
+    <p>Let us trace through what this program says, without repeating the language mechanics:</p>
+
+    <p><strong>Structure:</strong> There are agents, assets, and capabilities. Agents own assets. Assets can be composed. Agents have capabilities that govern what they may do.</p>
+
+    <p><strong>Resources:</strong> Ownership is linear. When an asset is transferred, the old ownership fact is consumed and a new one is produced. The compiler ensures this bookkeeping is exact.</p>
+
+    <p><strong>Space:</strong> Assets exist in locations. Locations nest. Transfers are spatially constrained — both parties must be co-located, or the asset must be in transit.</p>
+
+    <p><strong>Behavior:</strong> Transfers are effects with explicit preconditions and postconditions. Temporal ordering describes what leads to what. Behavioral guarantees specify what the system must ensure under fair scheduling.</p>
+
+    <p><strong>Context:</strong> The rules specialize by universe. A jurisdiction imposes ownership limits. An organization requires approval for high-value transfers. The same structural definitions apply everywhere — only the constraints tighten.</p>
+
+    <p><strong>Verification:</strong> Before the program compiles, verification tools check different aspects: logical consistency (Z3), temporal progress (TLA+), and behavioral equivalence (mCRL2). Spatial and probabilistic checking is planned.</p>
+
+    <p><strong>Compilation:</strong> The verified program is lowered through the compiler's IR, transformed, and translated to <a href="https://ziglang.org/">Zig</a>. The resulting binary enforces the constraints that survived erasure.</p>
+
+    <h2>What the Binary Does</h2>
+
+    <p>The compiled program is not a theorem prover or a model checker. It is a native binary that:</p>
+
+    <ul>
+      <li>Manages agents, assets, and capabilities as typed data structures</li>
+      <li>Enforces ownership linearity through move semantics — no garbage collector, no reference counting for ownership facts</li>
+      <li>Runs seller and buyer processes as concurrent tasks with typed message passing</li>
+      <li>Scopes data access by spatial containment — a process in one location cannot directly touch assets in another</li>
+      <li>Reports constraint violations at the boundaries where external input enters the system — the only place where invariants can be threatened at runtime</li>
+    </ul>
+
+    <p>Everything else — the proofs, the type-level evidence, the erased bindings, the universe hierarchy — exists only at compile time. The binary is lean.</p>
+
+    <h2>One Language, One Program, One Pipeline</h2>
+
+    <p>This is the central point of Spine.</p>
+
+    <p>A conventional approach to this system would require multiple artifacts: a database schema for facts, an application layer for business logic, a process orchestrator for concurrency, a constraint solver configuration for verification, deployment manifests for spatial concerns, and separate rule engines for jurisdiction-specific policies.</p>
+
+    <p>In Spine, it is one program. The facts, the constraints, the effects, the processes, the spatial structure, the resource discipline, the universe hierarchy, the verification targets, and the compilation strategy are all expressed in one language, understood by one compiler, verified by one pipeline, and compiled to one binary.</p>
+
+    <p>The developer writes a structured description of the system. The compiler does the rest.</p>
+
+    <h2>Looking Back</h2>
+
+    <p>We started this series with a question: <a href="01-programming-reality.html">what if programming meant describing reality?</a></p>
+
+    <p>Over fourteen posts, we built up the answer piece by piece:</p>
+
+    <ol>
+      <li><strong>Facts</strong> — the world has structure</li>
+      <li><strong>Rules</strong> — structure evolves</li>
+      <li><strong>Effects</strong> — change is explicit</li>
+      <li><strong>Invariants</strong> — some things must always hold</li>
+      <li><strong>Time</strong> — systems evolve</li>
+      <li><strong>Probability</strong> — uncertainty is real</li>
+      <li><strong>Processes</strong> — things happen concurrently</li>
+      <li><strong>Space</strong> — location matters</li>
+      <li><strong>Resources</strong> — usage is tracked</li>
+      <li><strong>Universes</strong> — context determines meaning</li>
+      <li><strong>Verification</strong> — properties are checked</li>
+      <li><strong>Compilation</strong> — descriptions become programs</li>
+    </ol>
+
+    <p>And now, a complete program that uses all of them.</p>
+
+    <p>Spine is still being built. But the shape is clear: a language where you describe the system you mean, and the compiler ensures that what you described is what you get.</p>
+
+    <div class="post-nav">
+      <a href="14-from-spine-to-machine-code.html">← Previous: From Spine to Machine Code</a>
+      <a href="16-future-directions-parsing-as-a-nondeterministic-effect.html">Next: Future Directions: Parsing as a Nondeterministic Effect →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

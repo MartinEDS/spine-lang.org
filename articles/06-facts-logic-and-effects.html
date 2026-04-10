@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Facts, Logic, and Effects in One Language – Spine</title>
+  <meta name="description" content="What happens when structure, behavior, and correctness are no longer separate concerns.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Facts, Logic, and Effects in One Language – Spine">
+  <meta property="og:description" content="What happens when structure, behavior, and correctness are no longer separate concerns.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/06-facts-logic-and-effects.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Facts, Logic, and Effects in One Language – Spine">
+  <meta name="twitter:description" content="What happens when structure, behavior, and correctness are no longer separate concerns.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/06-facts-logic-and-effects.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Facts, Logic, and Effects in One Language",
+    "description": "What happens when structure, behavior, and correctness are no longer separate concerns.",
+    "url": "https://spine-lang.org/articles/06-facts-logic-and-effects.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 6
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Facts, Logic, and Effects in One Language</h1>
+      <div class="meta">Post 6 · Phase 2 — Unification</div>
+    </header>
+
+    <p>So far, we have introduced the core elements of a Spine system:</p>
+
+    <ul>
+      <li>Facts describe what is true</li>
+      <li>Rules describe how truth can change</li>
+      <li>Effects describe what actions are possible</li>
+      <li>Invariants describe what must always hold</li>
+    </ul>
+
+    <p>Each of these ideas is useful on its own.</p>
+
+    <p>But the real shift happens when they are no longer separate concerns.</p>
+
+    <h2>A Fragmented Landscape</h2>
+
+    <p>In most systems today, these aspects are split across different layers:</p>
+
+    <ul>
+      <li>Data models describe structure</li>
+      <li>Business logic implements behavior</li>
+      <li>Access control defines permissions</li>
+      <li>Validation enforces constraints</li>
+      <li>Verification, if present, is external</li>
+    </ul>
+
+    <p>Each layer has its own language, its own tools, and its own assumptions.</p>
+
+    <p>As a result, the same concept is expressed multiple times, consistency becomes difficult to maintain, and reasoning about the system as a whole is hard.</p>
+
+    <h2>A Unified View</h2>
+
+    <p>Spine takes a different approach.</p>
+
+    <p>Facts, logic, and effects are not separate layers — they are part of the same system.</p>
+
+    <p>This means:</p>
+
+    <ul>
+      <li>Facts are not just stored — they participate in behavior</li>
+      <li>Rules are not just documentation — they define valid transitions</li>
+      <li>Effects are not just implementation — they are constrained by the model</li>
+      <li>Invariants are not just checks — they shape what is possible</li>
+    </ul>
+
+    <p>Everything is expressed in a single, coherent framework.</p>
+
+    <h2>Returning to the Asset System</h2>
+
+    <p>Let's revisit our running example.</p>
+
+    <p>We have:</p>
+
+    <ul>
+      <li><strong>Facts:</strong> <code>Owns(Agent, Asset)</code>, <code>PartOf(Asset, Asset)</code></li>
+      <li><strong>Rules:</strong> ownership can be transferred</li>
+      <li><strong>Effects:</strong> <code>TransferOwnership</code></li>
+      <li><strong>Invariants:</strong> an asset has at most one owner</li>
+    </ul>
+
+    <p>Individually, these are simple. Together, they define a system with structure, behavior, and guarantees.</p>
+
+    <!-- Placeholder: Spine code example showing all elements integrated -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Interaction Between Layers</h2>
+
+    <p>The important part is how these elements interact.</p>
+
+    <h3>Facts and Rules</h3>
+    <p>Rules operate over facts: they require certain facts to hold and produce new facts.</p>
+
+    <h3>Rules and Invariants</h3>
+    <p>Rules must respect invariants: a transfer cannot create multiple owners, and invalid states are not allowed.</p>
+
+    <h3>Effects and Rules</h3>
+    <p>Effects trigger rules: an effect corresponds to a valid transition and cannot occur unless its conditions are satisfied.</p>
+
+    <h3>Effects and Facts</h3>
+    <p>Effects are constrained by facts: only an owner may initiate a transfer, and permissions are expressed as facts.</p>
+
+    <h2>A Coherent System</h2>
+
+    <p>When these pieces are combined, something interesting happens.</p>
+
+    <p>We are no longer dealing with isolated functions, scattered checks, or implicit assumptions.</p>
+
+    <p>Instead, we have a system where structure, behavior, and correctness are defined together.</p>
+
+    <p>And as we will see, this coherence extends further: not all facts are equal. Some are persistent, others are consumed on use. Resource discipline — tracking how many times each element may be used — will become another dimension of this unified framework.</p>
+
+    <p>This makes it possible to reason about the system as a whole.</p>
+
+    <h2>No Hidden Layers</h2>
+
+    <p>One of the goals of this approach is to reduce hidden complexity.</p>
+
+    <p>In many systems, behavior is hidden in code, constraints are hidden in validation logic, and permissions are scattered across modules.</p>
+
+    <p>In Spine, facts are explicit, rules are explicit, effects are explicit, and invariants are explicit.</p>
+
+    <p>This makes the system easier to understand, analyze, and evolve.</p>
+
+    <h2>Composability Across Concerns</h2>
+
+    <p>Because everything lives in the same framework, composition becomes more natural.</p>
+
+    <p>We can extend the fact system (e.g., delegation), refine rules (e.g., conditional transfers), add new effects (e.g., temporary access), and strengthen invariants.</p>
+
+    <p>And all of these changes interact in predictable ways.</p>
+
+    <h2>A Different Way to Think About Programs</h2>
+
+    <p>This leads to a broader shift:</p>
+
+    <blockquote>A program is not just a sequence of instructions. It is a structured description of a system.</blockquote>
+
+    <p>In this view, execution is one aspect, correctness is another, modeling is another. But they are all part of the same whole.</p>
+
+    <h2>Why This Matters</h2>
+
+    <p>When these elements are unified:</p>
+
+    <ul>
+      <li>Fewer inconsistencies arise</li>
+      <li>Reasoning becomes more direct</li>
+      <li>Verification becomes possible</li>
+      <li>Systems become more transparent</li>
+    </ul>
+
+    <p>This is especially important in domains where correctness matters, rules are complex, and systems evolve over time.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>So far, we have treated our system as if it exists in a single, fixed context.</p>
+
+    <p>But real systems rarely do.</p>
+
+    <p>Rules may depend on jurisdiction, organizational policies, or environmental conditions. The same action may be valid in one context and invalid in another.</p>
+
+    <p>In the next post, we will explore this idea: how the meaning of facts, rules, and effects can depend on context.</p>
+
+    <p>This will take us one step closer to understanding how Spine models not just systems, but systems that vary across different domains and interpretations.</p>
+
+    <div class="post-nav">
+      <a href="05-dependent-types-and-real-world-systems.html">← Previous: Dependent Types and Real-World Systems</a>
+      <a href="07-modeling-rules-that-depend-on-context.html">Next: Modeling Rules That Depend on Context →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

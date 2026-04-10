@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Future Directions: Parsing as a Nondeterministic Effect – Spine</title>
+  <meta name="description" content="How modeling parsing as a nondeterministic effect gives Spine something akin to a dynamic grammar — where what can be said depends on what has been said.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Future Directions: Parsing as a Nondeterministic Effect – Spine">
+  <meta property="og:description" content="How modeling parsing as a nondeterministic effect gives Spine something akin to a dynamic grammar — where what can be said depends on what has been said.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/16-future-directions-parsing-as-a-nondeterministic-effect.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Future Directions: Parsing as a Nondeterministic Effect – Spine">
+  <meta name="twitter:description" content="How modeling parsing as a nondeterministic effect gives Spine something akin to a dynamic grammar — where what can be said depends on what has been said.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/16-future-directions-parsing-as-a-nondeterministic-effect.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Future Directions: Parsing as a Nondeterministic Effect",
+    "description": "How modeling parsing as a nondeterministic effect gives Spine something akin to a dynamic grammar \u2014 where what can be said depends on what has been said.",
+    "url": "https://spine-lang.org/articles/16-future-directions-parsing-as-a-nondeterministic-effect.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 17
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Future Directions: Parsing as a Nondeterministic Effect</h1>
+      <div class="meta">Post 16 · Future Directions</div>
+    </header>
+
+    <p>The previous post walked through a complete Spine program. The series has covered the language as it is being built: facts, effects, processes, space, resources, universes, verification, and compilation.</p>
+
+    <p>This post looks ahead — at a design direction that has not yet been fully realized, but that follows naturally from the ideas already in place.</p>
+
+    <p>It starts with a simple observation: <strong>parsing is an effect</strong>.</p>
+
+    <h2>The Conventional View of Parsing</h2>
+
+    <p>In most languages, the parser is a fixed, separate phase. The grammar is defined once — in a BNF specification, a parser combinator library, or a hand-written recursive descent parser. The grammar does not change based on what has been parsed so far. It does not depend on what facts exist in the system or what universe the program operates in.</p>
+
+    <p>This separation is practical but limiting. Consider:</p>
+
+    <ul>
+      <li>A domain-specific notation where the valid syntax depends on which entities have been declared earlier in the file.</li>
+      <li>A configuration language where the available keywords change based on the loaded modules.</li>
+      <li>A protocol description where the valid next message depends on the current state of the conversation.</li>
+    </ul>
+
+    <p>In each case, the grammar is not static. What you <em>can</em> say depends on what you <em>have</em> said — or on the context in which you are speaking.</p>
+
+    <p>Traditional parsers handle this through ad-hoc mechanisms: symbol tables consulted during parsing, context-sensitive hacks grafted onto context-free grammars, or multiple parsing passes. These work, but they are bolted on. The grammar formalism does not account for them.</p>
+
+    <h2>Parsing as an Effect</h2>
+
+    <p>Spine already has a precise notion of effects: structured operations with preconditions and postconditions that transform the state of the world.</p>
+
+    <p>Parsing fits this description exactly:</p>
+
+    <ul>
+      <li>The <strong>state</strong> is the input stream plus whatever has been recognized so far.</li>
+      <li>A parse step <strong>consumes</strong> input (a resource) and <strong>produces</strong> structure (a fact).</li>
+      <li>The <strong>precondition</strong> determines what is valid to parse next — which depends on the current state.</li>
+      <li>The <strong>postcondition</strong> describes what the world looks like after a successful parse: new facts exist, new entities are in scope, new syntax may have become available.</li>
+    </ul>
+
+    <p>Once parsing is an effect, it participates in the same machinery as every other effect in Spine: it has typed pre- and postconditions, it is subject to resource tracking, and it can be verified.</p>
+
+    <h2>Nondeterminism</h2>
+
+    <p>Parsing is inherently nondeterministic. When the parser encounters an input token, there may be multiple valid ways to proceed. A traditional parser resolves this through lookahead, backtracking, or grammar restrictions (LL, LR, PEG priority). The nondeterminism is managed — squeezed into deterministic control flow.</p>
+
+    <p>Spine takes a different view. Nondeterminism is not a problem to be eliminated. It is a <strong>nondeterministic effect</strong>.</p>
+
+    <p>A nondeterministic effect is one that can produce multiple possible outcomes. The system explores all of them — or, more precisely, the system <em>represents</em> all of them as a structured space of possibilities.</p>
+
+    <p>This is not new territory for Spine. We have already seen:</p>
+
+    <ul>
+      <li><a href="08-time-space-and-uncertainty.html">Probabilistic effects</a> — where outcomes have associated probabilities.</li>
+      <li><a href="09-processes-and-concurrent-behavior.html">Nondeterministic choice in processes</a> — where a process may take one of several paths.</li>
+      <li><a href="../articles/13-from-programs-to-proof-pipelines.html">Verification of nondeterministic systems</a> — where tools like <a href="https://www.prismmodelchecker.org/">PRISM</a> and <a href="https://www.mcrl2.org/">mCRL2</a> analyze all possible behaviors.</li>
+    </ul>
+
+    <p>Modeling parsing as a nondeterministic effect means the parser does not need to commit to a single interpretation prematurely. It explores the space of valid parses, constrained by the current state, and produces all valid readings.</p>
+
+    <h2>What This Gives Us: Dynamic Grammar</h2>
+
+    <p>When parsing is a nondeterministic effect with state-dependent preconditions, the grammar becomes <strong>dynamic</strong>.</p>
+
+    <p>Not dynamic in the sense of being unpredictable or chaotic. Dynamic in the sense that the set of valid productions — the things that can be said — evolves as the parse progresses. Each successfully parsed construct can introduce new facts, and those facts can enable new syntax.</p>
+
+    <p>Consider a concrete scenario:</p>
+
+    <ol>
+      <li>The parser encounters a <strong>universe declaration</strong>. After parsing it, the universe's vocabulary — its fact types, its effect signatures — becomes available as syntax.</li>
+      <li>The parser encounters an <strong>entity declaration</strong>. After parsing it, that entity name becomes a valid token in subsequent expressions.</li>
+      <li>The parser encounters a <strong>capability definition</strong>. After parsing it, rules that reference that capability become syntactically valid.</li>
+    </ol>
+
+    <p>At each step, the postcondition of one parse effect becomes the precondition of the next. The grammar grows as the program is read.</p>
+
+    <p>This is not a special mechanism. It is a consequence of treating parsing as an effect in a system that already tracks state, resources, and preconditions.</p>
+
+    <h2>How It Works Structurally</h2>
+
+    <p>At a technical level, a Spine parser built this way is a composition of nondeterministic effectful operations:</p>
+
+    <ul>
+      <li>Each <strong>production rule</strong> is an effect: it consumes input tokens (linear resources), checks preconditions against the current parse state, and produces parsed structure as new facts.</li>
+      <li><strong>Alternatives</strong> are nondeterministic choices: when multiple productions could apply, the parser branches. Each branch has its own state and its own continuation.</li>
+      <li><strong>Sequencing</strong> is effect composition: parsing A then B means the postcondition of A feeds the precondition of B.</li>
+      <li><strong>The grammar</strong> is the set of effects whose preconditions are currently satisfiable. As facts accumulate, more effects become available — the grammar expands.</li>
+    </ul>
+
+    <p>Because all of this lives within Spine's effect system, the compiler represents the parser as a composition of effects — with sequential composition for sequencing, alternatives for independent parse branches, and recursion for recursive grammars.</p>
+
+    <h2>Resource Tracking in Parsing</h2>
+
+    <p>One detail deserves emphasis: input tokens are <strong>linear resources</strong>.</p>
+
+    <p>A token, once consumed, is gone. It cannot be consumed again by a different branch. This is enforced by the same <a href="11-resources-and-ownership.html">QTT resource discipline</a> that tracks ownership in the asset system.</p>
+
+    <p>This has a practical consequence: the parser cannot accidentally read the same input twice, and it cannot silently drop input. Resource tracking makes the parser's relationship with its input stream explicit and verifiable.</p>
+
+    <p>Backtracking, in this model, is not rewinding an input pointer. It is exploring an alternative branch that consumes the same tokens differently — a nondeterministic choice, not an imperative undo.</p>
+
+    <h2>Universes and Grammar</h2>
+
+    <p>The connection to <a href="12-universes-as-context.html">universes</a> is natural.</p>
+
+    <p>If the grammar depends on the current state, and the state includes which universe is active, then the grammar is universe-dependent. Different universes may enable different syntax:</p>
+
+    <ul>
+      <li>A <strong>General</strong> universe provides the base grammar — core Spine syntax.</li>
+      <li>A <strong>domain-specific</strong> universe extends it — adding notation for that domain's concepts.</li>
+      <li>An <strong>embedded DSL</strong> is just a universe that introduces its own vocabulary and grammar rules as effects.</li>
+    </ul>
+
+    <p>There is no separate macro system, no preprocessor, no template language. Domain-specific syntax is a consequence of domain-specific universes and the dynamic grammar that falls out of treating parsing as an effect.</p>
+
+    <h2>Verification of Parsers</h2>
+
+    <p>Because the parser is built from the same effects as the rest of the system, it is subject to the same verification pipeline.</p>
+
+    <ul>
+      <li><strong><a href="https://github.com/Z3Prover/z3">Z3</a></strong> can check that the grammar is unambiguous under a given set of preconditions — that for any input, there is at most one valid parse.</li>
+      <li><strong><a href="https://lamport.azurewebsites.net/tla/tla.html">TLA+</a></strong> can check that the parser always makes progress — that no input causes it to loop indefinitely.</li>
+      <li><strong><a href="https://www.mcrl2.org/">mCRL2</a></strong> can verify properties of the parser as a process — determinism, deadlock-freedom, confluence.</li>
+    </ul>
+
+    <p>These are not hypothetical applications. They follow directly from the fact that the parser is an effectful process, and effectful processes are what the verification pipeline is designed to analyze.</p>
+
+    <h2>Self-Hosting Implications</h2>
+
+    <p>There is a recursive consequence worth noting.</p>
+
+    <p>If Spine's parser is itself a Spine program — a composition of nondeterministic effects — then Spine's syntax is defined in the same language it parses. The grammar is not an external specification. It is a Spine program that describes how to read Spine programs.</p>
+
+    <p>This is the natural endpoint of treating parsing as an effect: the language becomes self-describing. Extensions to the language are extensions to the parser, written in the language itself, verified by the same pipeline, compiled by the same backend.</p>
+
+    <h2>What Remains</h2>
+
+    <p>This is a future direction, not a shipped feature. The pieces are in place — nondeterministic effects, state-dependent preconditions, linear resource tracking, universe-polymorphic contexts — but the specific design of the parsing effect interface, the resolution strategy for ambiguity, and the performance characteristics of nondeterministic parse exploration are active areas of work.</p>
+
+    <p>What we can say now is this: the decision to model effects as structured, verifiable, composable operations — made early in Spine's design — opens a door that most languages never approach. Parsing does not need to be a special case. It does not need its own formalism. It is just another effect, subject to the same rules as everything else.</p>
+
+    <p>And when parsing is just another effect, the boundary between the language and its syntax dissolves. What you can say becomes part of what the program defines.</p>
+
+    <div class="post-nav">
+      <a href="15-a-complete-spine-program-explained.html">← Previous: A Complete Spine Program Explained</a>
+      <span></span>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

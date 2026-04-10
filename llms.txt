@@ -1,0 +1,112 @@
+# Spine
+
+> A language for modeling systems — what exists, what can change, and what must always be true — then compiling those descriptions to verified native code.
+
+Spine combines fact-based modeling, formal reasoning, and explicit state changes into a single language for correct-by-construction software. It compiles through a verified pipeline to native machine code via Zig.
+
+## Core Concepts
+
+- **Fact-based modeling**: Programs describe domains using first-class facts and relationships, inspired by Object-Role Modeling (ORM2).
+- **Dependent types**: Types depend on values, enabling precise properties like "a list of length n" or "an asset with exactly one owner."
+- **Effect system**: Effects have explicit preconditions and postconditions. Side effects are declared, not hidden.
+- **Quantitative Type Theory (QTT)**: Linear, unrestricted, and erased resource modes are part of the language design. Compiler enforcement is in progress.
+- **Processes**: Concurrent behavior modeled with typed channels and process algebra, enabling compile-time deadlock and liveness checking.
+- **Spatial structure**: Bigraph-inspired containment and locality determine what is accessible and how things interact.
+- **Universes**: Structured contexts that layer meaning — jurisdictions, organizations, physical locations — with universe polymorphism.
+- **FLP Codegen**: The compiler uses Functional Logic Programming (FLP) correspondence relations for code generation — bidirectional mappings between Spine and Zig that enable compilation forward and decompilation backward for round-trip verification. The self-hosting compiler compiles all 145 modules via FLP with zero regressions.
+
+## Verification Pipeline
+
+Spine integrates verification tools into its compilation pipeline:
+
+- **Z3**: Checks logical constraint satisfiability — end-to-end round-trip working
+- **TLA+**: Generates verification artifacts for temporal properties of state transitions
+- **mCRL2**: Generates verification artifacts for concurrent process behavior
+- **PRISM**: Planned support for probabilistic property checking
+- **BigraphER**: Planned support for spatial structure invariant checking
+
+The compiler extracts verification targets automatically from the program's own declarations. Z3 obligations round-trip end-to-end; TLA+ and mCRL2 produce artifacts for external tool invocation; BigraphER and PRISM integration is planned.
+
+## Compilation
+
+Spine programs compile through:
+
+1. Surface syntax → Validated IR
+2. FLP correspondence relations (bidirectional DTL ↔ Zig translation)
+3. Verification extraction (projections to Z3, TLA+, mCRL2; BigraphER and PRISM planned)
+4. Code generation → Zig source
+5. Zig compiler → Native binary
+
+The compiler uses FLP (Functional Logic Programming) correspondence relations — bidirectional Spine ↔ Zig mappings — achieving self-hosting fixed-point across 145 modules. Decompilation (the reverse direction) enables round-trip verification of compiler correctness.
+
+## AI-Assisted Development
+
+Spine is built entirely with AI-assisted coding. Its explicit semantics, low ambiguity, and compositional structure make it particularly compatible with how LLMs reason about code. The verification pipeline provides structured feedback that enables tight human-AI-compiler feedback loops.
+
+## Governance
+
+Spine is governed by a foundation charter designed to prevent capture by any single entity. Key documents:
+
+- Ecosystem Constitution: principles and decision-making structure
+- Licensing Policy: open-source licensing approach
+- Foundation Charter Appendix: structural safeguards
+- Trademark and Contributor Policy: contribution and IP guidelines
+- Anti-Capture Checklist: specific measures against corporate or individual capture
+
+## Use Cases
+
+Spine's most compelling use cases position it as a specification tool alongside existing systems and teams — not as a stack replacement. In each scenario, the specification is the product and the executable is a byproduct.
+
+**Existing Systems:**
+- Digital Twin: write a specification of a production system to surface inconsistencies; the compiled executable becomes a digital twin for A/B testing
+- Regulatory Compliance as Code: encode regulations as an executable specification; test existing systems against it; update when regulations change
+- Migration Oracle: specify legacy behavior before rewriting; the executable becomes the oracle that defines when migration is complete
+
+**New Work:**
+- Spec-First Development: write the specification first; development team builds in their chosen stack and tests against the reference executable
+- Behavioral Contracts: specify behavior between teams — preconditions, postconditions, temporal constraints — going beyond structural contracts like OpenAPI
+- Procurement Contract: use the specification as the acceptance criterion when outsourcing; the reference executable settles what was specified
+
+## Links
+
+- Homepage: https://spine-lang.org/
+- Use Cases: https://spine-lang.org/use-cases/
+- AI and Spine: https://spine-lang.org/ai.html
+- Articles: https://spine-lang.org/articles/
+- Governance: https://spine-lang.org/governance/
+
+## Article Series
+
+A 16-part series of articles exploring the design of Spine:
+
+1. Programming Reality — why we need a language that unifies logic, facts, and effects
+2. Facts as First-Class Citizens — why facts, not data structures, should be the foundation
+3. A Small Spine Program — a concrete example of Spine syntax
+4. Effects as System Semantics — making effects explicit, constrained, and meaningful
+5. Dependent Types and Real-World Systems — expressing guarantees about entire systems
+6. Facts, Logic, and Effects in One Language — bringing the three traditions together
+7. Modeling Rules That Depend on Context — context-sensitive rule systems
+8. Time, Space, and Uncertainty — modeling temporal and probabilistic behavior
+9. Processes and Concurrent Behavior — communication, synchronization, behavioral equivalence
+10. Spatial Structure and Locality — bigraph-inspired nesting and containment
+11. Resources and Ownership — linear resource tracking via Quantitative Type Theory
+12. Universes as Context — structured contexts that determine what rules apply
+13. From Programs to Proof Pipelines — integrating Z3, TLA+, mCRL2 (with BigraphER and PRISM planned)
+14. From Spine to Machine Code — the full compilation pipeline via Zig
+15. A Complete Spine Program Explained — all features in one worked example
+16. Future Directions: Parsing as a Nondeterministic Effect — dynamic grammars via effects
+
+## Blog
+
+Developer blog with personal reflections on building Spine.
+
+- A Brief History of Spine (March 26, 2026) — how an exploratory project in dependent type theory became an executable specification engine with built-in verification
+
+## Links
+
+- Homepage: https://spine-lang.org/
+- Use Cases: https://spine-lang.org/use-cases/
+- Articles: https://spine-lang.org/articles/
+- Blog: https://spine-lang.org/blog/
+- AI and Spine: https://spine-lang.org/ai.html
+- Governance: https://spine-lang.org/governance/

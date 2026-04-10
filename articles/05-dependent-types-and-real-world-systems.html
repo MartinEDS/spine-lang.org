@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dependent Types and Real-World Systems – Spine</title>
+  <meta name="description" content="Expressing guarantees about entire systems, not just individual values.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Dependent Types and Real-World Systems – Spine">
+  <meta property="og:description" content="Expressing guarantees about entire systems, not just individual values.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/05-dependent-types-and-real-world-systems.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Dependent Types and Real-World Systems – Spine">
+  <meta name="twitter:description" content="Expressing guarantees about entire systems, not just individual values.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/05-dependent-types-and-real-world-systems.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Dependent Types and Real-World Systems",
+    "description": "Expressing guarantees about entire systems, not just individual values.",
+    "url": "https://spine-lang.org/articles/05-dependent-types-and-real-world-systems.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 5
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Dependent Types and Real-World Systems</h1>
+      <div class="meta">Post 5 · Phase 2 — Logic</div>
+    </header>
+
+    <p>So far, we have built up a small but expressive foundation:</p>
+
+    <ul>
+      <li>Facts describe what is true</li>
+      <li>Rules describe how truth can change</li>
+      <li>Effects describe what actions are possible</li>
+    </ul>
+
+    <p>This already allows us to model systems in a structured way.</p>
+
+    <p>But an important question remains: <em>How do we ensure that certain properties always hold?</em></p>
+
+    <p>For example: an asset should never have more than one owner, a transfer should not create invalid states, and permissions should remain consistent.</p>
+
+    <p>We can state these informally. But we want more than that. We want these properties to be part of the system itself.</p>
+
+    <h2>From Constraints to Guarantees</h2>
+
+    <p>In earlier posts, we introduced constraints: <em>"An asset has at most one owner."</em></p>
+
+    <p>These constraints define what valid states look like.</p>
+
+    <p>Now we take the next step: expressing properties that must hold across all possible states and transitions.</p>
+
+    <p>This moves us from describing valid configurations to <strong>reasoning about entire systems</strong>.</p>
+
+    <h2>A Glimpse of Dependent Types</h2>
+
+    <p>Systems like <strong><a href="https://lean-lang.org/">Lean</a></strong> and <strong><a href="https://www.idris-lang.org/">Idris</a></strong> show how types can be used to express precise properties.</p>
+
+    <p>In these systems, types are not just categories like integers or strings. They can express relationships and constraints.</p>
+
+    <p>For example, a type might encode <em>"a list of length n"</em> or <em>"a value greater than zero"</em>.</p>
+
+    <p>This is the essence of dependent types: types that depend on values, and can express detailed properties about them.</p>
+
+    <h2>Bringing This Into Systems</h2>
+
+    <p>Spine draws inspiration from these ideas, but applies them in a different setting.</p>
+
+    <p>Instead of focusing primarily on mathematical objects or isolated functions, we are dealing with evolving systems, facts and relationships, and actions over time.</p>
+
+    <p>The question becomes: <em>How can we express properties of an entire system in a precise way?</em></p>
+
+    <h2>Invariants in the Asset System</h2>
+
+    <p>Let's return to our example.</p>
+
+    <p>We already have the idea that an asset has at most one owner. In Spine, this is not just a guideline. It is part of the system's fact model — a constraint defined alongside the facts themselves, not layered on after the code is written.</p>
+
+    <p>It applies to all states, across all transitions, regardless of which effects are used.</p>
+
+    <p>This kind of property is often called an <strong>invariant</strong>.</p>
+
+    <!-- Placeholder: Spine code example for invariants -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Rules Must Preserve Invariants</h2>
+
+    <p>Once invariants are part of the system, they impose obligations.</p>
+
+    <p>For example: the transfer rule must not create multiple owners. No sequence of effects should violate ownership uniqueness.</p>
+
+    <p>This leads to an important shift: it is not enough for a rule to describe a change — it must preserve the correctness of the system.</p>
+
+    <h2>From Local Checks to Global Reasoning</h2>
+
+    <p>In many programs, correctness is enforced through tests, runtime checks, and careful discipline.</p>
+
+    <p>These approaches are useful, but they are partial and external to the program's structure.</p>
+
+    <p>In a system with richer types and constraints, we can instead ask:</p>
+
+    <ul>
+      <li>Are there any sequences of actions that break the rules?</li>
+      <li>Can an invalid state ever be reached? (This is NP-complete in the general case — which is precisely why tools like <a href="https://lamport.azurewebsites.net/tla/tla.html">TLA+</a> exist: they search the state transition space to find any sequence of transitions that results in a constraint being violated.)</li>
+      <li>Do all allowed transitions preserve invariants?</li>
+    </ul>
+
+    <p>These are not just runtime questions — they are questions about the system itself.</p>
+
+    <p>There is a further subtlety: some meaningful constraints can be stated but not evaluated until after a violation has occurred. For example, "the transfer of ownership must be notified to the authority within two weeks" cannot be checked until the deadline has passed. These temporal constraints require different treatment from the static invariants above.</p>
+
+    <h2>Expressing Properties of Behavior</h2>
+
+    <p>We can now start to express properties like:</p>
+
+    <ul>
+      <li><em>"Ownership is always unique"</em></li>
+      <li><em>"Every transfer results in a valid state"</em></li>
+      <li><em>"Unauthorized actions cannot occur"</em></li>
+    </ul>
+
+    <p>These are not tied to a single function or operation. They describe the behavior of the system as a whole.</p>
+
+    <p>Some of these properties go beyond logical correctness. For instance, we may want to express that resources are never duplicated or lost — that every transfer accounts for what is consumed and what is produced. This kind of guarantee involves not just <em>what</em> is true, but <em>how many times</em> each fact is used.</p>
+
+    <h2>Not Just Mathematics</h2>
+
+    <p>At this point, it might seem like we are moving toward a theorem prover.</p>
+
+    <p>Systems like <strong><a href="https://lean-lang.org/">Lean</a></strong> are extremely powerful in expressing and proving properties.</p>
+
+    <p>Spine shares some of this foundation, but has a different focus. It is not primarily about proving abstract theorems. Instead, it is about modeling real systems, expressing their constraints, and ensuring those constraints are respected.</p>
+
+    <h2>Bridging Description and Guarantee</h2>
+
+    <p>What makes this interesting is the combination:</p>
+
+    <ul>
+      <li>Facts describe structure</li>
+      <li>Rules describe change</li>
+      <li>Effects describe behavior</li>
+      <li>Types and invariants describe correctness</li>
+    </ul>
+
+    <p>These are not separate layers. They are all part of the same system.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>This leads to another shift in perspective: from writing programs that <em>try</em> to be correct, to describing systems where correctness is part of their structure.</p>
+
+    <p>Instead of asking <em>"Did we handle all edge cases?"</em>, we can ask <em>"Is it even possible to construct an invalid state?"</em></p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We now have structure, behavior, constraints, and guarantees.</p>
+
+    <p>In the next post, we will bring these elements together: how facts, rules, effects, and invariants interact, how they form a coherent whole, and how this differs from traditional approaches.</p>
+
+    <p>At that point, the shape of Spine as a unified system will start to become clear.</p>
+
+    <div class="post-nav">
+      <a href="04-effects-as-system-semantics.html">← Previous: Effects as System Semantics</a>
+      <a href="06-facts-logic-and-effects.html">Next: Facts, Logic, and Effects in One Language →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

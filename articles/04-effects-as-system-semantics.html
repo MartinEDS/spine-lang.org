@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Effects as System Semantics – Spine</title>
+  <meta name="description" content="Making effects explicit, constrained, and meaningful within a system.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Effects as System Semantics – Spine">
+  <meta property="og:description" content="Making effects explicit, constrained, and meaningful within a system.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/04-effects-as-system-semantics.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Effects as System Semantics – Spine">
+  <meta name="twitter:description" content="Making effects explicit, constrained, and meaningful within a system.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/04-effects-as-system-semantics.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Effects as System Semantics",
+    "description": "Making effects explicit, constrained, and meaningful within a system.",
+    "url": "https://spine-lang.org/articles/04-effects-as-system-semantics.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 4
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Effects as System Semantics</h1>
+      <div class="meta">Post 4 · Phase 1 — Effects</div>
+    </header>
+
+    <p>In the previous post, we introduced rules as descriptions of how a system can evolve: what the system constraints require before a transition, and what they require afterward.</p>
+
+    <p>This allowed us to describe valid transitions without committing to a specific implementation.</p>
+
+    <p>But something is still missing.</p>
+
+    <p>So far, we have described what is true (facts) and how truth can change (rules). We have not yet described <em>what a system is actually allowed to do</em>.</p>
+
+    <h2>From Rules to Actions</h2>
+
+    <p>Let's return to our running example.</p>
+
+    <p>We defined a rule for transferring ownership: requires current ownership, ensures new ownership.</p>
+
+    <p>This describes a valid transformation. But in a real system, something must initiate that transformation — a user action, a system process, an external event.</p>
+
+    <p>In most programming languages, this is where we write functions — functions that perform updates, functions that trigger changes. These functions often mix business logic, state mutation, and external interaction.</p>
+
+    <p>The result is that it becomes difficult to answer a simple question: <em>What is this system actually allowed to do?</em></p>
+
+    <h2>Making Effects Explicit</h2>
+
+    <p>Languages like <strong><a href="https://koka-lang.github.io/">Koka</a></strong> show that effects can be made explicit and composable.</p>
+
+    <p>Instead of hiding side effects inside functions, they are tracked and described.</p>
+
+    <p>Spine takes inspiration from this idea, but places it in a different context.</p>
+
+    <p>Effects are not just properties of functions — they are part of the system being modeled.</p>
+
+    <h2>Effects in the Asset System</h2>
+
+    <p>In our example, we can introduce an effect: <code>TransferOwnership</code>.</p>
+
+    <p>This represents the system's response to a transfer event — the state change that results when an ownership transfer occurs.</p>
+
+    <p>Unlike a typical function, this effect is not free-standing. It is constrained by the system: it is only permitted when certain facts hold, and its result must satisfy all system constraints.</p>
+
+    <p>In other words: effects are governed by the same structure that defines the system.</p>
+
+    <!-- Placeholder: Spine code example for effects constrained by facts -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Effects and Rules</h2>
+
+    <p>We can now connect the pieces:</p>
+
+    <ul>
+      <li><strong>Facts</strong> describe states</li>
+      <li><strong>Rules</strong> describe valid transitions</li>
+      <li><strong>Effects</strong> are the system's response to events — the state changes that result from triggering a transition</li>
+    </ul>
+
+    <p>An effect such as <code>TransferOwnership</code> is the system's response to a transfer event. It is only valid when the rule's conditions are met.</p>
+
+    <p>This creates a tight relationship: effects are not arbitrary operations — they are realizations of valid transitions.</p>
+
+    <h2>Permissions and Capabilities</h2>
+
+    <p>Once effects are explicit, we can reason about <em>who</em> or <em>what</em> is allowed to trigger them.</p>
+
+    <p>For example:</p>
+
+    <ul>
+      <li>Only the current owner may transfer an asset</li>
+      <li>Delegated agents may have limited permissions</li>
+    </ul>
+
+    <p>This introduces the idea of <strong>capabilities</strong>: an agent may have permission to trigger certain effects, and those permissions are themselves part of the system state. Permissions are typically defined over classes — "an owner may sell any car they own" — rather than requiring a separate permission for each individual fact.</p>
+
+    <p>Now the system begins to describe not just what changes are valid, but also who is allowed to initiate them.</p>
+
+    <p>There is a further subtlety: some permissions may be single-use. A one-time authorization, once exercised, is consumed. This distinction — between resources that persist and resources that are spent — will become important later.</p>
+
+    <h2>Effects Are Not Just I/O</h2>
+
+    <p>In many languages, effects are associated with input/output, state mutation, and external systems.</p>
+
+    <p>In Spine, effects have a broader role. They describe actions within the system, interactions between agents, and transitions governed by rules.</p>
+
+    <p>This shifts the perspective: effects are not just about interacting with the outside world — they are about how the system evolves.</p>
+
+    <h2>Constraining Behavior</h2>
+
+    <p>Because effects are explicit and connected to rules, they can be constrained:</p>
+
+    <ul>
+      <li>An effect cannot violate invariants</li>
+      <li>An effect cannot occur without satisfying preconditions</li>
+      <li>An effect cannot produce invalid states</li>
+    </ul>
+
+    <p>This leads to a powerful property: the space of possible behaviors is structured and limited by the model itself.</p>
+
+    <h2>Composing Effects</h2>
+
+    <p>Effects can also be combined: a transfer followed by a delegation, a sequence of operations forming a workflow.</p>
+
+    <p>Because each effect is tied to rules and facts, composition remains predictable, analyzable, and constrained.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>With effects in place, the system now has three layers:</p>
+
+    <ul>
+      <li>Facts define what is true</li>
+      <li>Rules define how truth can change</li>
+      <li>Effects define what actions are possible</li>
+    </ul>
+
+    <p>This leads to another shift in perspective: from writing functions that perform actions, to describing systems where actions are first-class and constrained.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We now have the core ingredients of a system: structure (facts), transitions (rules), and behavior (effects).</p>
+
+    <p>In the next post, we will deepen this further by introducing invariants and guarantees — properties that must always hold.</p>
+
+    <p>This will bring us closer to the world of formal reasoning, and connect these ideas to systems like <strong><a href="https://lean-lang.org/">Lean</a></strong>.</p>
+
+    <p>At that point, we will not just describe systems and their behavior — we will begin to reason about their correctness.</p>
+
+    <div class="post-nav">
+      <a href="03-a-small-spine-program.html">← Previous: A Small Spine Program</a>
+      <a href="05-dependent-types-and-real-world-systems.html">Next: Dependent Types and Real-World Systems →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modeling Rules That Depend on Context – Spine</title>
+  <meta name="description" content="When rules are not absolute — layered systems and contextual variation.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Modeling Rules That Depend on Context – Spine">
+  <meta property="og:description" content="When rules are not absolute — layered systems and contextual variation.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/07-modeling-rules-that-depend-on-context.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Modeling Rules That Depend on Context – Spine">
+  <meta name="twitter:description" content="When rules are not absolute — layered systems and contextual variation.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/07-modeling-rules-that-depend-on-context.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Modeling Rules That Depend on Context",
+    "description": "When rules are not absolute \u2014 layered systems and contextual variation.",
+    "url": "https://spine-lang.org/articles/07-modeling-rules-that-depend-on-context.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 7
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Modeling Rules That Depend on Context</h1>
+      <div class="meta">Post 7 · Phase 2 — Context &amp; Variation</div>
+    </header>
+
+    <p>So far, we have treated our system as if it exists in a single, fixed setting.</p>
+
+    <p>We defined facts, rules, effects, and invariants — and we reasoned about them as a coherent whole.</p>
+
+    <p>But real systems rarely operate in a single, universal context.</p>
+
+    <h2>When Rules Are Not Absolute</h2>
+
+    <p>Consider a simple statement from our Asset System:</p>
+
+    <blockquote>Ownership can be transferred.</blockquote>
+
+    <p>At first glance, this seems straightforward.</p>
+
+    <p>But in practice, whether a transfer is allowed may depend on:</p>
+
+    <ul>
+      <li>Legal jurisdiction</li>
+      <li>Organizational policy</li>
+      <li>Contractual agreements</li>
+    </ul>
+
+    <p>For example: in one jurisdiction, certain assets may not be transferable. In another, transfers may require approval. Within an organization, additional restrictions may apply.</p>
+
+    <p>The rule is no longer absolute. It depends on context.</p>
+
+    <h2>The Limits of Conditionals</h2>
+
+    <p>In many systems, this kind of variation is handled with conditionals:</p>
+
+    <pre><code>if country == X, apply rule A
+if company_policy == Y, apply rule B</code></pre>
+
+    <p>Over time, these conditions accumulate — scattered across code, difficult to track, hard to reason about.</p>
+
+    <p>The structure of the system becomes obscured by the logic used to adapt it.</p>
+
+    <h2>A Layered Perspective</h2>
+
+    <p>Instead of embedding all variation into conditionals, we can take a different view:</p>
+
+    <blockquote>A system can be described in layers.</blockquote>
+
+    <p>For example:</p>
+
+    <ul>
+      <li><strong>General Layer</strong> — basic ownership rules, fundamental constraints</li>
+      <li><strong>Jurisdiction Layer</strong> — legal restrictions, regulatory requirements</li>
+      <li><strong>Organization Layer</strong> — company-specific policies, internal permissions</li>
+    </ul>
+
+    <p>Each layer builds on the previous one.</p>
+
+    <h2>Specializing Rules</h2>
+
+    <p>In this layered view:</p>
+
+    <ul>
+      <li>The general system defines what is typically allowed</li>
+      <li>Additional layers refine or restrict those possibilities</li>
+    </ul>
+
+    <p>For example: a general rule allows ownership transfer. A jurisdiction layer may restrict transfers of certain assets. An organization layer may require approval before transfer.</p>
+
+    <p>Each layer adds meaning.</p>
+
+    <h2>Context as Part of the System</h2>
+
+    <p>This leads to an important shift:</p>
+
+    <blockquote>Context is not external — it is part of the system itself.</blockquote>
+
+    <p>Instead of asking <em>"Which rules should we apply?"</em>, we can ask <em>"In which context is this system operating?"</em></p>
+
+    <p>Once the context is known, the applicable rules follow naturally.</p>
+
+    <h2>Facts, Rules, and Context</h2>
+
+    <p>This idea applies across the system:</p>
+
+    <ul>
+      <li><strong>Facts</strong> — what relationships exist may depend on context</li>
+      <li><strong>Rules</strong> — what transitions are allowed may vary</li>
+      <li><strong>Effects</strong> — what actions are possible may change</li>
+      <li><strong>Invariants</strong> — what must always hold may be context-dependent</li>
+    </ul>
+
+    <p>Context influences everything.</p>
+
+    <h2>The Asset System, Revisited</h2>
+
+    <p>Let's extend our example.</p>
+
+    <p>We still have <code>Owns(Agent, Asset)</code> and <code>TransferOwnership</code>.</p>
+
+    <p>But now:</p>
+
+    <ul>
+      <li>In one context, all transfers are allowed</li>
+      <li>In another, transfers require authorization</li>
+      <li>In a third, some assets cannot be transferred at all</li>
+    </ul>
+
+    <p>We are not changing the entire system. We are refining it based on where it is used.</p>
+
+    <!-- Placeholder: Spine code example for layered/contextual rules -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Why This Matters</h2>
+
+    <h3>Clarity</h3>
+    <p>Rules are not hidden inside conditionals. They are organized according to where they apply.</p>
+
+    <h3>Reuse</h3>
+    <p>The general system can be reused across jurisdictions, organizations, and applications.</p>
+
+    <h3>Composability</h3>
+    <p>Contexts can be layered and combined in predictable ways.</p>
+
+    <h3>Reasoning</h3>
+    <p>We can ask: what is allowed in this context? How do rules differ across contexts? Are constraints preserved in all cases?</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>This introduces another shift in perspective: from writing systems with special cases, to describing systems that vary across contexts.</p>
+
+    <p>Instead of embedding variation into code, we structure it as part of the model.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We have now introduced structure (facts), behavior (rules and effects), correctness (invariants), and variation (context).</p>
+
+    <p>In the next post, we will explore how systems evolve over time and under uncertainty: how states change, how behavior unfolds, and how time and probability become part of the model.</p>
+
+    <p>And as we move forward, the idea of context will become even more central — eventually leading to a more precise way of describing it.</p>
+
+    <div class="post-nav">
+      <a href="06-facts-logic-and-effects.html">← Previous: Facts, Logic, and Effects in One Language</a>
+      <a href="08-time-space-and-uncertainty.html">Next: Time, Space, and Uncertainty →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

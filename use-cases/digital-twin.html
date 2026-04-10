@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Twin of an Existing System – Spine</title>
+  <meta name="description" content="Use Spine to create a verified specification of a production system. The process surfaces inconsistencies. The executable becomes a digital twin for A/B testing.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Digital Twin of an Existing System – Spine">
+  <meta property="og:description" content="Use Spine to create a verified specification of a production system. The process surfaces inconsistencies. The executable becomes a digital twin for A/B testing.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/use-cases/digital-twin.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Digital Twin of an Existing System – Spine">
+  <meta name="twitter:description" content="Use Spine to create a verified specification of a production system. The process surfaces inconsistencies. The executable becomes a digital twin for A/B testing.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/use-cases/digital-twin.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Digital Twin of an Existing System",
+    "description": "Use Spine to create a verified specification of a production system. The process surfaces inconsistencies. The executable becomes a digital twin for A/B testing.",
+    "url": "https://spine-lang.org/use-cases/digital-twin.html",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="index.html" class="active">Use Cases</a>
+      <a href="../articles/index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Digital Twin of an Existing System</h1>
+      <div class="meta">Use Cases · Existing Systems</div>
+    </header>
+
+    <h2>The Problem</h2>
+
+    <p>Production systems accumulate behavior that nobody fully understands. Business rules are spread across code, configuration, database triggers, and institutional memory. The system works — most of the time — but no one can state the complete ruleset. Refactoring is risky. Onboarding is slow. Edge cases surface as production incidents.</p>
+
+    <p>This is especially common in domains like insurance claim processing, financial trading rules, and healthcare eligibility — anywhere the rules are complex, layered, and evolved over years.</p>
+
+    <p>The system has no single source of truth. The code is the truth, but it is too tangled to read as a specification.</p>
+
+    <h2>The Approach</h2>
+
+    <p>Write a specification in Spine that describes what the existing system does. Not a rewrite — a specification. The goal is to capture the rules, not the implementation.</p>
+
+    <p>This process is where much of the value lies. Writing the specification forces you to articulate every rule explicitly. Ambiguities that have been papered over for years become visible. Contradictions between documented behavior and actual behavior surface. Edge cases that "just work" turn out to depend on undocumented assumptions.</p>
+
+    <p>Because Spine specifications are formally verified, the compiler catches entire classes of inconsistencies automatically — unreachable cases, contradictory preconditions, invariant violations. These are bugs in the existing system's logic that no test suite would find because nobody thought to write that test.</p>
+
+    <h2>The Outcome</h2>
+
+    <p>Once the specification is complete, you have two things:</p>
+
+    <ul>
+      <li><strong>A verified specification</strong> — a precise, human-readable document that describes the system's intended behavior, with formal guarantees that it is internally consistent.</li>
+      <li><strong>A digital twin</strong> — the compiled Spine executable, which implements the specification and can be run side-by-side with the production system.</li>
+    </ul>
+
+    <p>The digital twin enables A/B testing: feed the same inputs to both the production system and the Spine executable, compare the outputs. Where they diverge, either the specification is incomplete or the production system has a bug. Both are valuable findings.</p>
+
+    <p>Over time, the specification becomes the authoritative reference. Refactoring the production system is no longer a leap of faith — you have something to test against.</p>
+
+    <h2>The Workflow</h2>
+
+    <blockquote>
+      <p>Existing System → Observe &amp; Document Behavior → Specification in Spine → Compile → Digital Twin → A/B Testing Against Production</p>
+    </blockquote>
+
+    <p>This is not a migration. The production system stays in place. The development team keeps their stack. The specification and its digital twin exist alongside the system, not in place of it.</p>
+
+    <h2>Why This Works</h2>
+
+    <p>Spine's verification pipeline catches inconsistencies that testing cannot. Tests check specific scenarios; verification checks all scenarios. A test suite can miss an edge case. A verified specification cannot contain a contradiction without the compiler rejecting it.</p>
+
+    <p>The specification is also documentation — but unlike a wiki page or a requirements document, it is executable and verified. It cannot drift from reality because reality is tested against it.</p>
+
+    <p>And the digital twin is not a simulation built on assumptions. It is the specification, compiled. Every behavior it exhibits follows directly from the rules you wrote. If the twin and the production system disagree, the rules tell you exactly why.</p>
+
+    <nav class="post-nav">
+      <a href="index.html">&larr; All Use Cases</a>
+      <a href="regulatory-compliance.html">Regulatory Compliance as Code &rarr;</a>
+    </nav>
+
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

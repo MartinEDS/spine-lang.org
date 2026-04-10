@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Spine to Machine Code – Spine</title>
+  <meta name="description" content="Following a Spine program from surface syntax through correspondence relations to compiled machine code via Zig.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="From Spine to Machine Code – Spine">
+  <meta property="og:description" content="Following a Spine program from surface syntax through correspondence relations to compiled machine code via Zig.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/14-from-spine-to-machine-code.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="From Spine to Machine Code – Spine">
+  <meta name="twitter:description" content="Following a Spine program from surface syntax through correspondence relations to compiled machine code via Zig.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/14-from-spine-to-machine-code.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "From Spine to Machine Code",
+    "description": "Following a Spine program from surface syntax through correspondence relations to compiled machine code via Zig.",
+    "url": "https://spine-lang.org/articles/14-from-spine-to-machine-code.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 14
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>From Spine to Machine Code</h1>
+      <div class="meta">Post 14 · Phase 3 — Compilation</div>
+    </header>
+
+    <p>In the previous post, we saw how Spine programs are verified — how facts, invariants, and effects are projected to tools like <a href="https://github.com/Z3Prover/z3">Z3</a>, <a href="https://lamport.azurewebsites.net/tla/tla.html">TLA+</a>, <a href="https://www.mcrl2.org/">mCRL2</a>, <a href="https://uog-bigraph.bitbucket.io/">BigraphER</a>, and <a href="https://www.prismmodelchecker.org/">PRISM</a>.</p>
+
+    <p>But verification alone does not produce a running program. At some point, a structured description of a system must become executable code.</p>
+
+    <p>This post follows that journey: from surface syntax to machine code.</p>
+
+    <h2>The Challenge</h2>
+
+    <p>Spine programs are not conventional programs. They describe facts, rules, effects, invariants, processes, spatial structure, resources, and universes.</p>
+
+    <p>A traditional compiler takes functions and control flow and translates them to machine instructions. Spine must translate something richer: a system with logical constraints, concurrent processes, spatial nesting, and resource discipline.</p>
+
+    <p>The question is: how do you go from a structured description of a system to efficient, runnable code — without losing the properties you worked so hard to define?</p>
+
+    <h2>Stage 1: Surface Syntax</h2>
+
+    <p>The journey begins with what the developer writes.</p>
+
+    <p>Spine's surface syntax is designed to express the concepts we have been discussing throughout this series: fact declarations, rules with preconditions and postconditions, effects constrained by the model, invariants, quantity annotations, universe declarations, and process definitions.</p>
+
+    <p>This is the language as the developer sees it — structured, explicit, and domain-aware.</p>
+
+    <!-- Placeholder: Spine code example showing a complete small program in surface syntax -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Stage 2: Correspondence Relations</h2>
+
+    <p>The surface syntax is compiled through <strong>bidirectional correspondence relations</strong>.</p>
+
+    <p>A correspondence relation is a formal mapping between two representations of the same program — in this case, between Spine's source language and the target language (Zig).</p>
+
+    <p>Unlike a conventional compiler that translates through a chain of intermediate representations, Spine defines a direct structural correspondence: each Spine construct has a counterpart in Zig, and the relationship between them is explicit, bidirectional, and verifiable.</p>
+
+    <p>This approach is called <strong>FLP</strong> — Functional Logic Programming applied to compilation. The compiler uses logic programming's ability to express relations (not just functions) to define the translation. A Spine expression <em>corresponds to</em> a Zig expression; a Spine type <em>corresponds to</em> a Zig type. The compiler navigates these correspondences to produce output.</p>
+
+    <h2>Why Correspondence Relations?</h2>
+
+    <p>The choice of compilation strategy matters because it determines what guarantees the compiler can provide.</p>
+
+    <p>A conventional compiler is a <em>function</em>: it takes source and produces target. If the output is wrong, you debug the function.</p>
+
+    <p>A correspondence-based compiler is a <em>relation</em>: it establishes that source and target are equivalent. This has a powerful consequence — the same relation that compiles code forward can also <strong>decompile</strong> it backward, by narrowing in the reverse direction.</p>
+
+    <p>If you compile a Spine program to Zig, then decompile the Zig back to Spine, and the result matches the original — you have a <strong>round-trip proof</strong> that the compilation preserved meaning. This is not testing. It is structural verification of the compiler itself.</p>
+
+    <p>Spine's compiler is self-hosting: it compiles itself. The FLP correspondence relations compile all 145 compiler modules, and the output matches the hand-coded path with zero regressions.</p>
+
+    <h2>Stage 3: Verification Extraction</h2>
+
+    <p>As described in the previous post, verification targets are extracted from the compiler’s frontend artifacts at this stage.</p>
+
+    <p>The compiler’s validated AST provides a unified structure from which different verification targets can be projected. Logical constraints project to Z3 queries. Transition structures project to TLA+ specifications. Process descriptions project to mCRL2 models.</p>
+
+    <p>Each projection preserves the relevant structure from the original program. The compiler handles the translation. The developer works in one language.</p>
+
+    <h2>Stage 4: Code Generation via Zig</h2>
+
+    <p>The final stage translates the validated program into <strong><a href="https://ziglang.org/">Zig</a></strong> source code, guided by the FLP correspondence relations.</p>
+
+    <p>Zig is a systems programming language designed for performance, safety, and interoperability with C. It produces efficient native binaries with predictable behavior and minimal runtime overhead.</p>
+
+    <p>Spine targets Zig rather than emitting machine code directly. This is a deliberate choice:</p>
+
+    <ul>
+      <li><strong>Portability</strong> — Zig supports many architectures and operating systems. Spine inherits this breadth without maintaining its own backends.</li>
+      <li><strong>Performance</strong> — Zig produces code comparable to C in speed and memory usage. Spine programs compile to efficient native binaries.</li>
+      <li><strong>Interoperability</strong> — Zig has seamless C ABI compatibility. Spine programs can call C libraries and be called from C without wrappers.</li>
+      <li><strong>Simplicity</strong> — Zig's explicit memory model and lack of hidden control flow make it a clean target for code generation. What the compiler emits is what executes.</li>
+    </ul>
+
+    <p>The Zig code is then compiled by the Zig compiler to produce native machine code for the target platform.</p>
+
+    <!-- Placeholder: Example showing a simple Spine program and the Zig code it generates -->
+    <!-- The coding agent can insert actual examples here -->
+
+    <h2>What Happens to the Rich Structure?</h2>
+
+    <p>A natural question: all that structure — facts, invariants, universes, resources, processes, spatial nesting — where does it go in the final binary?</p>
+
+    <p>Some of it is <strong>erased</strong>. Proofs, type-level evidence, and erased bindings (the 0-quantity mode from QTT) exist only at compile time. They ensure correctness but have no runtime cost.</p>
+
+    <p>Some of it is <strong>enforced by construction</strong>. Resource discipline means certain errors are impossible. The generated code simply does not contain the operations that would violate a linear constraint.</p>
+
+    <p>Some of it is <strong>compiled to runtime structure</strong>. Concurrent processes become threads or tasks. Communication channels become typed message queues. Spatial containment becomes scoped data access. Effects become function calls with well-defined pre- and post-conditions.</p>
+
+    <p>The result is a native binary that is efficient and correct — not because it performs runtime checks for every invariant, but because the compilation pipeline ensured that violations are structurally impossible.</p>
+
+    <h2>The Full Pipeline</h2>
+
+    <p>Putting it all together:</p>
+
+    <ol>
+      <li><strong>Surface syntax</strong> — the program as written</li>
+      <li><strong>Parsing and validation</strong> — AST construction and semantic checks</li>
+      <li><strong>Verification extraction</strong> — projections to Z3, TLA+, mCRL2</li>
+      <li><strong>FLP correspondence</strong> — bidirectional translation to Zig source code</li>
+      <li><strong>Native compilation</strong> — Zig compiler produces the final binary</li>
+    </ol>
+
+    <p>Each stage preserves meaning. The correspondence relations make the translation verifiable through decompilation round-trips. And the developer works in one language throughout.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>With the compilation pipeline in view, the story of Spine comes full circle.</p>
+
+    <p>We started by describing systems: facts, rules, effects. We added structure: invariants, processes, space, resources, universes. We verified properties. And now we compile to efficient machine code.</p>
+
+    <p>The shift is this: the same description that enables reasoning also enables execution. Modeling and compilation are not separate activities — they are two aspects of the same pipeline.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We have now seen the full arc: from system description to verified, compiled code.</p>
+
+    <p>In the next post, we will walk through a complete Spine program — bringing together every concept from this series into a single, concrete example.</p>
+
+    <div class="post-nav">
+      <a href="13-from-programs-to-proof-pipelines.html">← Previous: From Programs to Proof Pipelines</a>
+      <a href="15-a-complete-spine-program-explained.html">Next: A Complete Spine Program Explained →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Use Cases – Spine</title>
+  <meta name="description" content="How organizations use Spine as a specification tool — alongside existing systems and teams, without changing their stack.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Use Cases – Spine">
+  <meta property="og:description" content="How organizations use Spine as a specification tool — alongside existing systems and teams, without changing their stack.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/use-cases/">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Use Cases – Spine">
+  <meta name="twitter:description" content="How organizations use Spine as a specification tool — alongside existing systems and teams, without changing their stack.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/use-cases/">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Use Cases",
+    "description": "How organizations use Spine as a specification tool — alongside existing systems and teams, without changing their stack.",
+    "url": "https://spine-lang.org/use-cases/",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="index.html" class="active">Use Cases</a>
+      <a href="../articles/index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main class="blog-list index-page index-page-use-cases">
+  <div class="container">
+    <div class="page-header">
+      <div class="eyebrow">Specification-first workflows</div>
+      <h1>Specify, Verify, Compare</h1>
+      <p class="page-lead">The most obvious use of Spine is to write a program and compile it to an executable. But the most compelling scenarios use Spine as a specification tool alongside your existing systems and teams, without changing your stack.</p>
+      <p class="page-lead">In each scenario below, the specification is the product. The executable is a byproduct: a reference implementation you can test against, compare with, and reason about.</p>
+    </div>
+
+    <section class="section-group">
+      <h2>Existing Systems</h2>
+      <p class="section-caption">You already have something running.</p>
+
+      <div class="post-item">
+        <a href="digital-twin.html">Digital Twin of an Existing System</a>
+        <p class="excerpt">Your system works, but nobody can prove why. Write a specification in Spine. The process itself reveals inconsistencies. The compiled executable becomes a digital twin you can test against.</p>
+      </div>
+
+      <div class="post-item">
+        <a href="regulatory-compliance.html">Regulatory Compliance as Code</a>
+        <p class="excerpt">Model what the system must do, not what it does. Encode regulations as an executable specification. Test existing systems against the rule spec. When regulations change, update the spec and re-verify.</p>
+      </div>
+
+      <div class="post-item">
+        <a href="migration-oracle.html">Migration Oracle</a>
+        <p class="excerpt">Prove the new system does what the old one did. Specify legacy behavior in Spine before rewriting. The executable becomes the oracle — migration is complete when the new system matches the spec.</p>
+      </div>
+    </section>
+
+    <section class="section-group">
+      <h2>New Work</h2>
+      <p class="section-caption">You're building something.</p>
+
+      <div class="post-item">
+        <a href="spec-first.html">Spec-First Development</a>
+        <p class="excerpt">Write the spec once, build with the team you have. The Spine executable is the reference implementation. Your development team codes in their chosen stack and tests against it.</p>
+      </div>
+
+      <div class="post-item">
+        <a href="behavioral-contracts.html">Behavioral Contracts Between Teams</a>
+        <p class="excerpt">Agree on behavior, not just interfaces. Go beyond structural contracts like OpenAPI — specify preconditions, postconditions, and temporal constraints. Each team verifies independently.</p>
+      </div>
+
+      <div class="post-item">
+        <a href="procurement-contract.html">Specification as Procurement Contract</a>
+        <p class="excerpt">The spec is the acceptance criterion. When outsourcing development, the Spine executable settles what was specified. The vendor delivers code; you compare it against the reference.</p>
+      </div>
+    </section>
+
+    <p class="section-note">In every scenario, the specification is the product. The executable is a byproduct.</p>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

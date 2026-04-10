@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Brief History of Spine – Spine Blog</title>
+  <meta name="description" content="How an exploratory project in dependent type theory became an executable specification engine with built-in verification.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="A Brief History of Spine – Spine Blog">
+  <meta property="og:description" content="How an exploratory project in dependent type theory became an executable specification engine with built-in verification.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/blog/01-a-brief-history-of-spine.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="A Brief History of Spine – Spine Blog">
+  <meta name="twitter:description" content="How an exploratory project in dependent type theory became an executable specification engine with built-in verification.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/blog/01-a-brief-history-of-spine.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "A Brief History of Spine",
+    "description": "How an exploratory project in dependent type theory became an executable specification engine with built-in verification.",
+    "url": "https://spine-lang.org/blog/01-a-brief-history-of-spine.html",
+    "datePublished": "2026-03-26",
+    "author": {
+        "@type": "Person",
+        "name": "Niels Hoogeveen"
+    },
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Spine Blog",
+        "url": "https://spine-lang.org/blog/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="../articles/index.html">Articles</a>
+      <a href="index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>A Brief History of Spine</h1>
+      <div class="meta">March 26, 2026 · Niels Hoogeveen</div>
+    </header>
+
+    <p>Many moons ago, I started an exploratory project to get a better understanding of the inner workings of a dependently typed lambda calculus. I fired up a Rust project in VS Code and asked Copilot to create a data model and a unification algorithm for such a language.</p>
+
+    <p>Less than a minute later I had what I asked for. Quite an improvement over my experience with AI agents a year earlier.</p>
+
+    <p>Just an AST and that one algorithm didn't seem all that useful, so I asked the AI agent to write an evaluator and a type checker. Again it fairly quickly delivered, although it struggled a bit more in this area to get it right.</p>
+
+    <p>A parser followed, which was a much harder job for the AI agent, but after a few days of trial and error it succeeded and Spine was born.</p>
+
+    <h2>A Phase Transition</h2>
+
+    <p>When I asked the AI agent to encode the parser, AST, type checker and evaluator in Spine, I noticed a phase transition. Where it had struggled in Rust, a language it had been trained on, the AI agent was almost immediately fluent in Spine. That phase transition was most apparent the moment it had added universe polymorphism.</p>
+
+    <p>Now we had something to play with and that we did for several weeks. Little language experiments followed by hours of discussions became a daily routine. I had finally found a colleague who was willing to go in any direction I wanted to go and who possessed deep knowledge of things I only had intuitive notions of.</p>
+
+    <p>The AI agent, feeling like a colleague, gained a name: Taylor. It seemed appropriate.</p>
+
+    <h2>Exploring the Design Space</h2>
+
+    <p>In that period we added HoTT support, a proof system and a Koka inspired effect system, all things that somehow felt relevant and interesting to explore and learn about. We also built many things that to this day have not become part of the system. Such is the result of experimenting and exploring.</p>
+
+    <p>At this point I have to acknowledge the help I received from Gaja Gerrits, who pressed "Allow" and "Keep" in Copilot for hours, while I was engaged in other activities. A promise made is a promise kept.</p>
+
+    <h2>Fact-Based Modelling</h2>
+
+    <p>One of the things I wanted to explore as well, was fact based modelling. This was an area I actually had quite a bit of experience in, having used ORM2 on and off over the last 30 years.</p>
+
+    <p>In the past, I had made several attempts to hand craft a system based on fact based modelling, but never managed to finish any of those projects.</p>
+
+    <p>With Spine and Taylor as my new found partner in crime, I took another stab at creating a fact based modelling system and this time around it quickly led to a workable system.</p>
+
+    <p>Unlike other ORM2 systems, I didn't just want to make it a modelling tool, but turn it into something tied to an actual database and to an execution engine.</p>
+
+    <p>Specifications are certainly useful, but executable specifications are gold.</p>
+
+    <p>Having a dependently typed language with HoTT foundations, added another opportunity. Where ORM2 is based on first order logic, we now had a system that could also do higher order logic. This opened avenues for a different approach to fact based modelling, where we can add higher order rules and where facts can be applicable to more than one set, while maintaining the same semantics.</p>
+
+    <h2>The Compiler</h2>
+
+    <p>Building a self hosting compiler became the next frontier and that ended up being quite a daunting task. There were at least 7 different attempts to do so by bootstrapping the compiler via Rust. None of them led to the desired result. Another attempt in C became unmanageable.</p>
+
+    <p>Finally we had another go in Zig. Having learned from the previous attempts and Zig's comptime feature, we managed to build a bootstrap compiler, reused most of the Spine compiler code we had previously written and a rudimentary self hosting compiler was born.</p>
+
+    <h2>Categorical Foundations</h2>
+
+    <p>Months before, during one of the discussions with Taylor, I remarked that lambda calculus didn't feel primitive. Taylor went to work and came up with symmetric monoidal categories. I asked what else can be encoded with that and the response was: petri nets, process calculi, state machines, do-notation. It seemed to me this would be a suitable candidate for an intermediate language.</p>
+
+    <p>The first Zig based compiler didn't use that intermediate language, so another project was started to build a compiler pipeline based on symmetric monoidal categories. Traces were added. Categorical graph rewriting found its place in the compiler pipeline.</p>
+
+    <h2>Behaviour and Verification</h2>
+
+    <p>Based on feedback from others, I realized we had built a nice system with static guarantees, but we needed support for behaviour as well. With that in place, temporal, spatial and probabilistic support were added and solvers became part of the compiler pipeline. Z3 for constraint solving, TLA+ for temporal reasoning, mCRL2 for deadlock, livelock, and progress and PRISM for probabilistic reasoning.</p>
+
+    <p>What started as an exploration of advanced programming language concepts turned into an executable specification engine with built-in verification.</p>
+
+    <h2>Vibe-Coding a Coherent System</h2>
+
+    <p>The trajectory never was a linear progression. Some ideas came early on and only resurfaced weeks or even months later. If ever there was a project developed through vibe-coding, it is Spine. By continuous refinement and exploration, we eventually discovered a coherent system.</p>
+
+    <p>By now, there is a self-hosting compiler written in Spine, an LSP server written in Zig, and development tooling in Python. Not everything is written in Spine yet — and that's fine. The compiler is the core, and it compiles itself.</p>
+
+    <p>We're now in the process of wrapping it all up and turning this into an open source project, so we can start building a community.</p>
+
+    <p>Spine will become public in the upcoming weeks. It's been an intense and interesting journey and I hope others will find some of the joy I experienced building Spine.</p>
+
+    <div class="post-nav">
+      <a href="index.html">← All Posts</a>
+      <span></span>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Specification as Procurement Contract – Spine</title>
+  <meta name="description" content="When outsourcing development, the Spine specification is the acceptance criterion. The executable settles what was specified. Disputes evaporate.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Specification as Procurement Contract – Spine">
+  <meta property="og:description" content="When outsourcing development, the Spine specification is the acceptance criterion. The executable settles what was specified. Disputes evaporate.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/use-cases/procurement-contract.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Specification as Procurement Contract – Spine">
+  <meta name="twitter:description" content="When outsourcing development, the Spine specification is the acceptance criterion. The executable settles what was specified. Disputes evaporate.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/use-cases/procurement-contract.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Specification as Procurement Contract",
+    "description": "When outsourcing development, the Spine specification is the acceptance criterion. The executable settles what was specified. Disputes evaporate.",
+    "url": "https://spine-lang.org/use-cases/procurement-contract.html",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="index.html" class="active">Use Cases</a>
+      <a href="../articles/index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Specification as Procurement Contract</h1>
+      <div class="meta">Use Cases · New Work</div>
+    </header>
+
+    <h2>The Problem</h2>
+
+    <p>You are outsourcing development. The vendor needs to know what to build. You write a requirements document — pages of natural language, use case diagrams, acceptance criteria in spreadsheets. The vendor interprets it. You review their interpretation. Misunderstandings surface late, during user acceptance testing or after delivery.</p>
+
+    <p>Disputes about scope and correctness are expensive. "That is not what we specified" meets "that is not what the document says." Both sides are right, because the document is ambiguous enough to support either reading.</p>
+
+    <p>This pattern repeats in government IT procurement, outsourced enterprise development, and system integrator engagements — anywhere the people who define the system and the people who build it are in different organizations.</p>
+
+    <h2>The Approach</h2>
+
+    <p>Write the specification in Spine. Include it in the procurement contract. The compiled Spine executable is the reference implementation. Acceptance testing is automated comparison: the vendor's deliverable against the reference.</p>
+
+    <p>The specification is not ambiguous because it compiles. There is no room for interpretation disputes. If a scenario is unspecified, the specification does not compile for that case — it is an explicit gap, not an implicit assumption.</p>
+
+    <p>The vendor does not need to learn Spine. They need to produce a system whose behavior matches the reference. They choose their own stack, tools, and architecture. The specification constrains what the system does, not how it is built.</p>
+
+    <h2>The Outcome</h2>
+
+    <ul>
+      <li><strong>Objective acceptance</strong> — the vendor's delivery is tested against the reference executable. Pass or fail. No subjective interpretation of requirements.</li>
+      <li><strong>Scope clarity</strong> — the specification defines exactly what is in scope. Gaps are visible as uncompiled cases. Change requests become specification amendments — versioned, verified, and traceable.</li>
+      <li><strong>Reduced dispute risk</strong> — "what was specified" is answered by the specification, not by competing interpretations of a natural language document.</li>
+      <li><strong>Vendor independence</strong> — the specification belongs to the procuring organization. If the vendor relationship ends, the specification and reference implementation remain.</li>
+    </ul>
+
+    <h2>The Workflow</h2>
+
+    <blockquote>
+      <p>Requirements → Specification in Spine → Compile → Reference Executable → Include in Procurement Contract</p>
+    </blockquote>
+
+    <p>During vendor delivery:</p>
+
+    <blockquote>
+      <p>Vendor Delivers System → A/B Test Against Reference → Accept or Reject</p>
+    </blockquote>
+
+    <p>When scope changes:</p>
+
+    <blockquote>
+      <p>Change Request → Amend Specification → Re-verify → Update Reference → Formal Change Order</p>
+    </blockquote>
+
+    <h2>Why This Works</h2>
+
+    <p>Procurement contracts fail when the definition of "done" is subjective. The reference executable makes it objective. The vendor knows what to build. The procurer knows what to test against. Both parties work from the same artifact.</p>
+
+    <p>The specification is also a risk management tool. Because it is verified, the procuring organization knows the requirements are internally consistent before the contract is signed. Contradictory requirements — a common source of costly change orders — are caught by the compiler, not by the vendor.</p>
+
+    <p>And because the specification is version-controlled and formally verified, it creates an audit trail. Every change to the requirements is a diff in the specification. Every acceptance decision is a comparison against a deterministic reference. This is the level of traceability that high-stakes procurement demands but rarely achieves.</p>
+
+    <nav class="post-nav">
+      <a href="behavioral-contracts.html">&larr; Behavioral Contracts</a>
+      <a href="index.html">All Use Cases &rarr;</a>
+    </nav>
+
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

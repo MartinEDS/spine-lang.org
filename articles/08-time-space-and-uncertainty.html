@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time, Space, and Uncertainty – Spine</title>
+  <meta name="description" content="How systems evolve over time, handle uncertainty, and depend on spatial structure.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Time, Space, and Uncertainty – Spine">
+  <meta property="og:description" content="How systems evolve over time, handle uncertainty, and depend on spatial structure.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/08-time-space-and-uncertainty.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Time, Space, and Uncertainty – Spine">
+  <meta name="twitter:description" content="How systems evolve over time, handle uncertainty, and depend on spatial structure.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/08-time-space-and-uncertainty.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Time, Space, and Uncertainty",
+    "description": "How systems evolve over time, handle uncertainty, and depend on spatial structure.",
+    "url": "https://spine-lang.org/articles/08-time-space-and-uncertainty.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 8
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Time, Space, and Uncertainty</h1>
+      <div class="meta">Post 8 · Phase 2 — Dimensions</div>
+    </header>
+
+    <p>So far, we have described systems in terms of facts, rules, effects, invariants, and context.</p>
+
+    <p>This gives us a rich way to model structure and behavior.</p>
+
+    <p>But one important dimension is still missing. So far, our system has been static.</p>
+
+    <h2>Systems Evolve</h2>
+
+    <p>In reality, systems change over time.</p>
+
+    <p>Ownership is not just true or false: Alice owns an asset <em>now</em>, Bob may own it <em>later</em>.</p>
+
+    <p>Permissions may expire, be granted temporarily, or depend on past events.</p>
+
+    <p>To capture this, we need to move from describing a single state to describing a sequence of states over time.</p>
+
+    <h2>From States to Histories</h2>
+
+    <p>Instead of asking <em>"What is true?"</em>, we begin to ask <em>"What was true, and what becomes true next?"</em></p>
+
+    <p>Our earlier rule — ownership can be transferred — can now be understood as a transition from one valid state to another.</p>
+
+    <p>A system is no longer a single snapshot. It is a history of states connected by transitions.</p>
+
+    <h2>Time as a First-Class Concern</h2>
+
+    <p>In many systems, time is handled indirectly: timestamps in databases, logs of events, ad-hoc expiration checks.</p>
+
+    <p>These approaches work, but they are fragmented and difficult to reason about globally.</p>
+
+    <p>In Spine, time is part of the model itself.</p>
+
+    <p>This allows us to express ideas like:</p>
+
+    <ul>
+      <li>Ownership at a given moment</li>
+      <li>Sequences of valid transitions</li>
+      <li>Constraints over time</li>
+    </ul>
+
+    <!-- Placeholder: Spine code example for temporal facts -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Reasoning About Change</h2>
+
+    <p>Once time is explicit, we can ask deeper questions:</p>
+
+    <ul>
+      <li>Can an asset ever have two owners at the same time?</li>
+      <li>Does every transfer preserve ownership uniqueness across all future states?</li>
+      <li>Can a sequence of valid actions lead to an invalid configuration later?</li>
+    </ul>
+
+    <p>These are not just local checks. They are properties of entire evolutions of the system.</p>
+
+    <h2>Introducing Uncertainty</h2>
+
+    <p>Not all systems are deterministic.</p>
+
+    <p>In practice: actions may fail, outcomes may depend on external factors, and systems may be distributed or partially known.</p>
+
+    <p>For example: a transfer request may be rejected, approval may be probabilistic, and network delays may affect ordering.</p>
+
+    <p>This introduces uncertainty.</p>
+
+    <h2>From Deterministic to Probabilistic Behavior</h2>
+
+    <p>In a deterministic system, a given state and action lead to a single outcome.</p>
+
+    <p>In a system with uncertainty, a state and action may lead to multiple possible outcomes — each with some likelihood.</p>
+
+    <p>This changes how we think about behavior: not as a single path, but as a space of possible evolutions.</p>
+
+    <h2>Space as Context</h2>
+
+    <p>In addition to time and uncertainty, systems often depend on <em>where</em> things are.</p>
+
+    <p>For example: assets may exist in locations, actions may depend on proximity, and rules may vary across regions.</p>
+
+    <p>At first glance, this may seem like just another kind of data.</p>
+
+    <p>But it has deeper implications: distance may be defined differently depending on context, movement may have constraints, and relationships may depend on spatial structure.</p>
+
+    <p>This introduces another dimension: the interpretation of the system may depend on how space is modeled.</p>
+
+    <h2>Bringing It Together</h2>
+
+    <p>We now have a richer picture of our Asset System:</p>
+
+    <ul>
+      <li>It has structure (facts)</li>
+      <li>It has behavior (rules and effects)</li>
+      <li>It has correctness conditions (invariants)</li>
+      <li>It varies by context</li>
+      <li>It evolves over time</li>
+      <li>It may involve uncertainty</li>
+      <li>And it may depend on space</li>
+    </ul>
+
+    <p>These are not separate concerns. They interact.</p>
+
+    <h2>A System of Possible Worlds</h2>
+
+    <p>One way to think about this is: a system defines a <strong>space of possible worlds</strong>.</p>
+
+    <p>Each world satisfies the constraints and reflects a valid state.</p>
+
+    <p>Transitions connect these worlds over time. Uncertainty introduces multiple possible paths. Context determines which worlds are relevant.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>This brings us to another shift in perspective: from describing a single system, to describing a space of possible systems and their evolution.</p>
+
+    <p>This is where modeling begins to overlap with reasoning.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We have now assembled most of the pieces: facts, rules, effects, invariants, context, time, space, and uncertainty.</p>
+
+    <p>But so far, we have described systems as a single evolving whole. Real systems are not monolithic — they are made of parts that operate concurrently, communicate, and coordinate.</p>
+
+    <p>In the next post, we will explore <strong>processes</strong>: how concurrent behaviors are modeled, how agents interact, and how the composition of behaviors preserves the system's properties.</p>
+
+    <div class="post-nav">
+      <a href="07-modeling-rules-that-depend-on-context.html">← Previous: Modeling Rules That Depend on Context</a>
+      <a href="09-processes-and-concurrent-behavior.html">Next: Processes and Concurrent Behavior →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Universes as Context – Spine</title>
+  <meta name="description" content="Formalizing context through universes — how facts, rules, and effects acquire meaning within structured layers of interpretation.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Universes as Context – Spine">
+  <meta property="og:description" content="Formalizing context through universes — how facts, rules, and effects acquire meaning within structured layers of interpretation.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/12-universes-as-context.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Universes as Context – Spine">
+  <meta name="twitter:description" content="Formalizing context through universes — how facts, rules, and effects acquire meaning within structured layers of interpretation.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/12-universes-as-context.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Universes as Context",
+    "description": "Formalizing context through universes \u2014 how facts, rules, and effects acquire meaning within structured layers of interpretation.",
+    "url": "https://spine-lang.org/articles/12-universes-as-context.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 12
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Universes as Context</h1>
+      <div class="meta">Post 12 · Phase 3 — Formalization</div>
+    </header>
+
+    <p>In earlier posts, we introduced the idea that rules depend on context: a general ownership rule may be refined by jurisdiction or restricted by organizational policy.</p>
+
+    <p>We treated context informally — as layers that add meaning.</p>
+
+    <p>Now we give it a precise structure.</p>
+
+    <h2>The Problem with Informal Context</h2>
+
+    <p>When context is informal, several questions remain difficult to answer:</p>
+
+    <ul>
+      <li>When can facts from one context be used in another?</li>
+      <li>How do we know that a refinement is compatible with the general system?</li>
+      <li>What happens when two contexts overlap or conflict?</li>
+    </ul>
+
+    <p>As long as context is described only in natural language, these questions are resolved by convention — or not at all.</p>
+
+    <p>We need something more precise.</p>
+
+    <h2>Introducing Universes</h2>
+
+    <p>In Spine, a <strong>universe</strong> defines the context in which facts, rules, and effects are interpreted.</p>
+
+    <p>A universe is not a runtime container. It is a structural boundary that determines what is available, what is meaningful, and how elements relate.</p>
+
+    <p>The concept draws from <strong>universe polymorphism</strong> in dependent type theory — where types live at different levels, and the system tracks which level each element belongs to.</p>
+
+    <p>Spine extends this idea beyond types: universes organize not just types, but facts, rules, effects, and resources.</p>
+
+    <h2>A Business Example</h2>
+
+    <p>Let's make this concrete with our Asset System.</p>
+
+    <p>We define three universes, each building on the previous:</p>
+
+    <h3>General</h3>
+    <p>The base universe defines the core concepts: assets, agents, ownership, transfer. It expresses the abstract rules that any instance of this system must satisfy.</p>
+
+    <p>Here, the transfer rule is straightforward: ownership may change from one agent to another, with the usual constraints.</p>
+
+    <h3>Jurisdiction</h3>
+    <p>A jurisdiction universe refines the general system by adding legal structure.</p>
+
+    <p>In one jurisdiction, certain asset classes may not be transferable. In another, transfers above a threshold require regulatory approval. The jurisdiction does not replace the general rules — it narrows and extends them.</p>
+
+    <h3>Organization</h3>
+    <p>An organization universe adds further specificity: internal policies, approval workflows, delegation limits.</p>
+
+    <p>A company operating under a given jurisdiction inherits its constraints, and may add its own.</p>
+
+    <!-- Placeholder: Spine code example showing three layered universes (General, Jurisdiction, Organization) -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>What Universes Provide</h2>
+
+    <p>This structure gives us several things at once:</p>
+
+    <h3>Scoping</h3>
+    <p>Facts defined in one universe are only available where that universe is in scope. An organization-specific approval rule does not leak into the general system.</p>
+
+    <h3>Refinement</h3>
+    <p>A child universe may add rules, narrow constraints, or introduce new facts. It cannot weaken its parent — only strengthen it.</p>
+
+    <h3>Compatibility</h3>
+    <p>Because the relationship between universes is explicit, the system can check that refinements are compatible. An organization rule that contradicts its jurisdiction's requirements is a type error, not a runtime surprise.</p>
+
+    <h2>A Geometric Example</h2>
+
+    <p>The business example is intuitive, but universes are not limited to normative rules.</p>
+
+    <p>Consider a system that reasons about locations on Earth.</p>
+
+    <p>The base universe defines positions on a sphere — latitude, longitude, distances along great circles.</p>
+
+    <p>But real applications need projections: Mercator for navigation charts, local tangent planes for engineering, custom coordinate grids for specific regions.</p>
+
+    <p>Each projection is a universe. It inherits the concept of position from the base, but provides a different interpretation — a different way of computing distance, area, and direction.</p>
+
+    <p>A fact like <em>"the distance between A and B is 500 meters"</em> is meaningful only within the universe that defines how distance is measured.</p>
+
+    <!-- Placeholder: Spine code example showing Locality universes with parameterized projections -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Universes and Resources</h2>
+
+    <p>In the previous post, we introduced resource tracking: the idea that some facts are consumed on use.</p>
+
+    <p>Universes interact with this naturally.</p>
+
+    <p>A linear ownership fact belongs to a particular universe. Transferring it to a different context is not free — it requires an explicit mapping between universes, which the type system checks.</p>
+
+    <p>For example: moving an asset from one jurisdiction to another may require demonstrating that the receiving jurisdiction accepts the transfer. This is not a runtime check — it is a type-level obligation, verified at compile time.</p>
+
+    <h2>Universes and Effects</h2>
+
+    <p>Effects are also universe-aware.</p>
+
+    <p>An effect valid in the general universe may not be sufficient in a jurisdiction that requires additional preconditions.</p>
+
+    <p>Conversely, an effect defined at the organization level may be unavailable outside that organization's context.</p>
+
+    <p>This means that the space of possible behaviors is not just constrained by rules and resources — it is also shaped by which universe the system is operating in.</p>
+
+    <h2>Not Configuration, Not Modules</h2>
+
+    <p>It may be tempting to think of universes as configuration files or module systems.</p>
+
+    <p>They are neither.</p>
+
+    <p>Configuration is external and unstructured. Modules organize code. Universes organize <em>meaning</em> — they determine what facts, rules, effects, and resources signify in a given context.</p>
+
+    <p>A module can be imported. A universe defines the conditions under which something is interpretable at all.</p>
+
+    <h2>Universe Polymorphism</h2>
+
+    <p>One of the most useful properties of this structure is <strong>polymorphism</strong>.</p>
+
+    <p>A function or rule can be written to work across any universe that provides the required structure.</p>
+
+    <p>For example: an audit rule that checks whether all transfers satisfy their preconditions can be defined once and applied in any jurisdiction — general, specific, or organization-level — as long as the required facts and constraints are present.</p>
+
+    <p>This is universe polymorphism: code that is generic over the context in which it operates, with the type system ensuring that the context provides everything needed.</p>
+
+    <!-- Placeholder: Spine code example showing universe-polymorphic function -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>A Subtle Shift</h2>
+
+    <p>With universes in place, the system gains a new kind of structure.</p>
+
+    <p>We no longer describe one system. We describe a <strong>family of systems</strong> — related by refinement, parameterized by context, and connected through explicit universe relationships.</p>
+
+    <p>The same core model can be instantiated in different legal environments, different geometric interpretations, or different organizational settings — with the type system ensuring coherence at every level.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We now have the full set of ingredients: facts, rules, effects, invariants, time, space, uncertainty, processes, spatial structure, resources, and universes.</p>
+
+    <p>In the next post, we will turn from describing systems to <strong>verifying</strong> them — asking not just whether a system is well-structured, but whether it satisfies the properties we care about.</p>
+
+    <p>This will connect Spine to the world of formal verification: tools like <a href="https://github.com/Z3Prover/z3">Z3</a>, <a href="https://lamport.azurewebsites.net/tla/tla.html">TLA+</a>, <a href="https://www.mcrl2.org/">mCRL2</a>, <a href="https://uog-bigraph.bitbucket.io/">BigraphER</a>, and <a href="https://www.prismmodelchecker.org/">PRISM</a>, and how they fit into a language where correctness has been part of the design from the beginning.</p>
+
+    <div class="post-nav">
+      <a href="11-resources-and-ownership.html">← Previous: Resources and Ownership</a>
+      <a href="13-from-programs-to-proof-pipelines.html">Next: From Programs to Proof Pipelines →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

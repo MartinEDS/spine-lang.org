@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Behavioral Contracts Between Teams – Spine</title>
+  <meta name="description" content="Go beyond structural contracts like OpenAPI. Specify behavior — preconditions, postconditions, and temporal constraints — and let each team verify independently.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Behavioral Contracts Between Teams – Spine">
+  <meta property="og:description" content="Go beyond structural contracts like OpenAPI. Specify behavior — preconditions, postconditions, and temporal constraints — and let each team verify independently.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/use-cases/behavioral-contracts.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Behavioral Contracts Between Teams – Spine">
+  <meta name="twitter:description" content="Go beyond structural contracts like OpenAPI. Specify behavior — preconditions, postconditions, and temporal constraints — and let each team verify independently.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/use-cases/behavioral-contracts.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Behavioral Contracts Between Teams",
+    "description": "Go beyond structural contracts like OpenAPI. Specify behavior — preconditions, postconditions, and temporal constraints — and let each team verify independently.",
+    "url": "https://spine-lang.org/use-cases/behavioral-contracts.html",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="index.html" class="active">Use Cases</a>
+      <a href="../articles/index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Behavioral Contracts Between Teams</h1>
+      <div class="meta">Use Cases · New Work</div>
+    </header>
+
+    <h2>The Problem</h2>
+
+    <p>Multiple teams own different parts of a system. They agree on interfaces — API schemas, message formats, protocol buffers. Tools like OpenAPI and protobuf give them structural contracts: what fields exist, what types they have, what endpoints are available.</p>
+
+    <p>But structural contracts say nothing about behavior. They do not specify that a payment must be authorized before it is captured, that a session cannot be resumed after it expires, or that a retry must be idempotent. These behavioral rules live in documentation, Slack threads, and the heads of senior engineers.</p>
+
+    <p>When one team changes a behavior that another team depends on, nothing catches it. The schemas still match. The integration tests — if they exist — check happy paths. The failure surfaces in production, weeks later, as a subtle inconsistency.</p>
+
+    <p>This is the norm in microservices architectures, platform APIs, and multi-vendor integrations.</p>
+
+    <h2>The Approach</h2>
+
+    <p>Write the behavioral contract in Spine. Not the implementation — the contract. What each side must guarantee. What each side may assume.</p>
+
+    <p>A Spine behavioral contract specifies preconditions and postconditions for each interaction, temporal constraints on sequencing, and invariants that must hold across the boundary. It compiles to an executable that each team can test against independently.</p>
+
+    <p>Team A tests their service against the contract's expectations of the caller. Team B tests their service against the contract's expectations of the provider. Failures are not integration surprises — they are caught locally, against a shared, verified reference.</p>
+
+    <h2>The Outcome</h2>
+
+    <ul>
+      <li><strong>Shared behavioral truth</strong> — the contract defines not just what the shape of the data is, but what sequences of interactions are valid, what state transitions are allowed, and what invariants must hold.</li>
+      <li><strong>Independent verification</strong> — each team tests against the contract on their own. No coordinated integration environments required to catch behavioral mismatches.</li>
+      <li><strong>Change detection</strong> — when the contract is updated, the compiler identifies what changed. Each team re-verifies. Behavioral regressions are caught before deployment.</li>
+      <li><strong>Living documentation</strong> — the contract is a precise, executable description of the boundary. It replaces the wiki page that nobody updates.</li>
+    </ul>
+
+    <h2>The Workflow</h2>
+
+    <blockquote>
+      <p>Teams Agree on Boundary → Behavioral Contract in Spine → Compile → Contract Executable</p>
+    </blockquote>
+
+    <p>Each team, independently:</p>
+
+    <blockquote>
+      <p>Team Service → Test Against Contract Executable → Fix Violations</p>
+    </blockquote>
+
+    <p>When the boundary evolves:</p>
+
+    <blockquote>
+      <p>Update Contract → Re-verify → Each Team Re-tests</p>
+    </blockquote>
+
+    <h2>Why This Works</h2>
+
+    <p>Structural contracts answer "what data flows between us?" Behavioral contracts answer "what may we do with it, and in what order?" The second question is where the bugs live.</p>
+
+    <p>Spine's effect system is designed for exactly this. Effects have preconditions and postconditions. Processes have sequencing constraints. The compiler verifies that these constraints are consistent — not just that they parse. A contract that allows contradictory sequences is rejected at compile time.</p>
+
+    <p>And because the contract compiles to an executable, it is not just a specification — it is a test oracle. Each team has a concrete artifact to test against, not an abstract document to interpret.</p>
+
+    <nav class="post-nav">
+      <a href="spec-first.html">&larr; Spec-First Development</a>
+      <a href="procurement-contract.html">Procurement Contract &rarr;</a>
+    </nav>
+
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

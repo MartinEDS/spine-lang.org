@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Programs to Proof Pipelines – Spine</title>
+  <meta name="description" content="How Spine integrates verification into compilation — Z3, TLA+, mCRL2, BigraphER, PRISM, and why checking is not a separate phase.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="From Programs to Proof Pipelines – Spine">
+  <meta property="og:description" content="How Spine integrates verification into compilation — Z3, TLA+, mCRL2, BigraphER, PRISM, and why checking is not a separate phase.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/13-from-programs-to-proof-pipelines.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="From Programs to Proof Pipelines – Spine">
+  <meta name="twitter:description" content="How Spine integrates verification into compilation — Z3, TLA+, mCRL2, BigraphER, PRISM, and why checking is not a separate phase.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/13-from-programs-to-proof-pipelines.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "From Programs to Proof Pipelines",
+    "description": "How Spine integrates verification into compilation \u2014 Z3, TLA+, mCRL2, BigraphER, PRISM, and why checking is not a separate phase.",
+    "url": "https://spine-lang.org/articles/13-from-programs-to-proof-pipelines.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 13
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>From Programs to Proof Pipelines</h1>
+      <div class="meta">Post 13 · Phase 3 — Verification</div>
+    </header>
+
+    <p>Throughout this series, we have built up a system with facts, rules, effects, invariants, processes, spatial structure, resources, and universes.</p>
+
+    <p>At each step, we defined what is valid, what must hold, and what can change.</p>
+
+    <p>But defining correctness is not the same as checking it. We now turn to the question: <em>how does Spine actually verify the properties we have described?</em></p>
+
+    <h2>The State of Verification</h2>
+
+    <p>Powerful verification tools already exist.</p>
+
+    <p><strong><a href="https://github.com/Z3Prover/z3">Z3</a></strong> is a theorem prover that can check whether logical constraints are satisfiable — whether a set of conditions can ever be violated.</p>
+
+    <p><strong><a href="https://lamport.azurewebsites.net/tla/tla.html">TLA+</a></strong> is a specification language for reasoning about state machines — temporal sequences of transitions and the properties they preserve.</p>
+
+    <p><strong><a href="https://www.prismmodelchecker.org/">PRISM</a></strong> is a probabilistic model checker — it can verify properties of systems with uncertainty, where outcomes have likelihoods rather than certainties.</p>
+
+    <p>Each of these tools is well-established and individually capable.</p>
+
+    <p>But more exists. <strong><a href="https://www.mcrl2.org/">mCRL2</a></strong> is a toolset for analyzing concurrent processes — it can verify behavioral properties like deadlock freedom, liveness, and behavioral equivalence. <strong><a href="https://uog-bigraph.bitbucket.io/">BigraphER</a></strong> is a tool for reasoning about spatial structure and reconfiguration — it can check properties of systems where nesting, containment, and movement matter.</p>
+
+    <p>Together, these tools cover a remarkable range: logical constraints, temporal behavior, probabilistic properties, concurrent processes, and spatial structure.</p>
+
+    <p>The problem is that they exist in isolation.</p>
+
+    <h2>A Fragmented Landscape</h2>
+
+    <p>In practice, using these tools requires translating your system into each tool's own language, maintaining parallel representations, and reconciling the results.</p>
+
+    <p>The developer who writes the business logic is rarely the same person who writes the TLA+ specification. The Z3 encoding is yet another artifact. The probabilistic model is separate again. The process algebra model and the spatial configuration exist in their own worlds entirely.</p>
+
+    <p>As a result, verification is something most projects either skip entirely or apply only at the most critical points, if at all.</p>
+
+    <p>The problem is not that the tools are weak. It is that the path from program to proof is too long.</p>
+
+    <h2>Verification as Part of Compilation</h2>
+
+    <p>Spine takes a different approach.</p>
+
+    <blockquote>Verification is not a separate phase. It is part of compilation.</blockquote>
+
+    <p>Because Spine programs already express facts, constraints, invariants, and effects explicitly, the compiler has everything it needs to generate verification targets automatically.</p>
+
+    <p>The developer does not write a Z3 encoding. The compiler extracts one from the system's constraints. The developer does not maintain a TLA+ specification. The compiler derives one from the system's rules and transitions. Process models are extracted the same way.</p>
+
+    <h2>What Gets Checked</h2>
+
+    <p>Return to our Asset System.</p>
+
+    <p>We have defined:</p>
+
+    <ul>
+      <li>Facts: <code>Owns(Agent, Asset)</code></li>
+      <li>Rules: ownership can be transferred</li>
+      <li>Effects: <code>TransferOwnership</code></li>
+      <li>Invariant: an asset has at most one owner</li>
+      <li>Resource discipline: ownership is linear</li>
+    </ul>
+
+    <p>From these definitions, the compiler can extract several verification obligations:</p>
+
+    <h3>Constraint Satisfiability (Z3)</h3>
+    <p>Can the invariant be violated? Is there any assignment of facts that satisfies all rules but breaks ownership uniqueness? Z3 checks this by searching for a counterexample. If none exists, the invariant holds.</p>
+
+    <h3>Temporal Properties (TLA+)</h3>
+    <p>Does every sequence of valid transitions preserve the invariant? Can the system reach a state where two agents own the same asset? TLA+ explores the state space of all possible evolutions and checks that the property holds on every path.</p>
+
+    <h3>Process Properties (mCRL2)</h3>
+    <p>Can two concurrent processes deadlock? Does the approval workflow eventually produce a response for every request? Are two implementations of the same service behaviorally equivalent? mCRL2 analyzes the process structure extracted from the system's concurrent components.</p>
+
+    <h3>Planned: Probabilistic and Spatial Properties</h3>
+    <p>Two additional verification dimensions are under development. <strong>Probabilistic properties</strong> (via <a href="https://www.prismmodelchecker.org/">PRISM</a>) would check whether the probability of reaching an invalid state remains below a threshold. <strong>Spatial properties</strong> (via <a href="https://uog-bigraph.bitbucket.io/">BigraphER</a>) would verify containment invariants and spatial reconfiguration. The modeling constructs for both exist in Spine; the artifact generation is not yet complete.</p>
+
+    <!-- Placeholder: Spine code example showing invariant declarations that get extracted for verification -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>The Extraction Process</h2>
+
+    <p>The key idea is that these are not separate programs. They are views of the same system.</p>
+
+    <p>Spine's validated AST provides a unified structure from which different verification targets can be projected.</p>
+
+    <p>Logical constraints project to Z3 queries. Temporal declarations project to TLA+ specifications. Behavioral and process declarations project to mCRL2 specifications.</p>
+
+    <p>Each projection preserves the relevant structure from the original program. The compiler handles the translation. The developer works in one language.</p>
+
+    <h2>Verification and Universes</h2>
+
+    <p>In the previous post, we introduced universes as structured context.</p>
+
+    <p>Verification depends on which universe the system operates in.</p>
+
+    <p>An invariant might hold universally in the general system, but require additional conditions in a specific jurisdiction. A temporal property might be satisfied under one set of rules but violated when organization-specific policies are added.</p>
+
+    <p>Because universes are explicit, the compiler can generate verification targets for each context. This means we can ask not only <em>"does this property hold?"</em> but <em>"does this property hold in this universe?"</em></p>
+
+    <h2>Verification and Resources</h2>
+
+    <p>Resource tracking interacts with verification in a useful way.</p>
+
+    <p>Many invariants that would normally require proof become structural consequences of linearity. If ownership is linear, uniqueness is guaranteed by the type system — not by a verification pass.</p>
+
+    <p>This means the verification pipeline can focus on the properties that <em>cannot</em> be established by resource discipline alone: liveness properties, temporal ordering, probabilistic bounds, process equivalence, spatial invariants, and cross-universe consistency.</p>
+
+    <p>Resource tracking and verification are complementary. One handles structural guarantees. The other handles behavioral ones.</p>
+
+    <h2>From Local Checks to Global Reasoning</h2>
+
+    <p>Traditional testing asks: <em>"Does this function produce the right output for these inputs?"</em></p>
+
+    <p>Verification asks something stronger:</p>
+
+    <ul>
+      <li>Are there <strong>any</strong> sequences of actions that break the rules?</li>
+      <li>Can an invalid state <strong>ever</strong> be reached?</li>
+      <li>Do <strong>all</strong> allowed transitions preserve invariants?</li>
+    </ul>
+
+    <p>These are not questions about individual executions. They are questions about the system itself — its entire space of possible behaviors.</p>
+
+    <p>Because Spine makes facts, rules, effects, and invariants explicit, these questions become answerable as part of ordinary development.</p>
+
+    <h2>What This Does Not Replace</h2>
+
+    <p>Verification is not a silver bullet.</p>
+
+    <p>It cannot check properties that have not been stated. It cannot verify interactions with external systems that are not modeled. And for some properties, the state space may be too large for exhaustive checking.</p>
+
+    <p>But it can catch entire classes of errors that testing misses — errors that arise from unexpected combinations of valid actions, subtle interactions between rules, or edge cases in temporal behavior.</p>
+
+    <p>The goal is not to replace testing. It is to provide a fundamentally different level of assurance for the properties that matter most.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>With verification integrated into compilation, the relationship between writing code and reasoning about correctness changes.</p>
+
+    <p>You do not write a program and then separately try to verify it. You describe a system — and the act of description carries verification with it.</p>
+
+    <p>This is where everything we have built comes together: facts give structure to check, invariants give properties to verify, effects give transitions to explore, processes give concurrent behavior to analyze, spatial structure gives containment and locality to reason about, resources give structural guarantees, and universes give context to verify within.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We have described systems and verified them. What remains is the question of how they become executable.</p>
+
+    <p>In the next post, we will follow a Spine program from surface syntax through its intermediate representation to compiled machine code — the compilation pipeline that turns structured descriptions into efficient, running programs.</p>
+
+    <div class="post-nav">
+      <a href="12-universes-as-context.html">← Previous: Universes as Context</a>
+      <a href="14-from-spine-to-machine-code.html">Next: From Spine to Machine Code →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spatial Structure and Locality – Spine</title>
+  <meta name="description" content="How Spine models nesting, containment, and spatial relationships — where things are matters for what they can do.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Spatial Structure and Locality – Spine">
+  <meta property="og:description" content="How Spine models nesting, containment, and spatial relationships — where things are matters for what they can do.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/10-spatial-structure-and-locality.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Spatial Structure and Locality – Spine">
+  <meta name="twitter:description" content="How Spine models nesting, containment, and spatial relationships — where things are matters for what they can do.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/10-spatial-structure-and-locality.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Spatial Structure and Locality",
+    "description": "How Spine models nesting, containment, and spatial relationships \u2014 where things are matters for what they can do.",
+    "url": "https://spine-lang.org/articles/10-spatial-structure-and-locality.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 10
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Spatial Structure and Locality</h1>
+      <div class="meta">Post 10 · Phase 2 — Structure</div>
+    </header>
+
+    <p>In the previous post, we introduced processes: concurrent behaviors that communicate and synchronize.</p>
+
+    <p>But we treated all processes as if they exist in a flat space — equally accessible, equally connected.</p>
+
+    <p>Real systems have structure. Things are <em>somewhere</em>.</p>
+
+    <h2>Where Things Are Matters</h2>
+
+    <p>Consider a distributed version of our Asset System.</p>
+
+    <p>Assets are held in different locations — warehouses, vaults, digital registries. Agents operate from different offices or jurisdictions. Some processes run on-site, others run in the cloud.</p>
+
+    <p>The structure of <em>where</em> things are affects <em>what</em> they can do:</p>
+
+    <ul>
+      <li>An agent can only inspect assets it has local access to</li>
+      <li>A transfer between two locations requires coordination across a boundary</li>
+      <li>A process inside a secure enclave cannot freely communicate with the outside</li>
+    </ul>
+
+    <p>Space is not just metadata. It shapes the system's behavior.</p>
+
+    <h2>Containment and Nesting</h2>
+
+    <p>One of the most fundamental spatial relationships is <strong>containment</strong>.</p>
+
+    <p>A vault contains assets. An organization contains departments. A server contains services. A region contains locations.</p>
+
+    <p>Containment creates boundaries: what is inside a container is separated from what is outside. Crossing a boundary requires explicit action — moving, sending, or granting access.</p>
+
+    <p>In Spine, containment is not implicit. It is part of the system's structure, modeled explicitly.</p>
+
+    <h2>Bigraphs: A Foundation for Spatial Structure</h2>
+
+    <p>The idea of combining <strong>spatial nesting</strong> with <strong>behavioral linking</strong> comes from <strong>bigraph theory</strong>.</p>
+
+    <p>A bigraph has two independent structures:</p>
+
+    <ul>
+      <li>A <strong>place graph</strong> — describes nesting and containment: what is inside what</li>
+      <li>A <strong>link graph</strong> — describes connectivity: what can communicate with what</li>
+    </ul>
+
+    <p>These two structures are orthogonal. An agent inside a container may have communication links to agents outside it. Two agents in the same location may have no direct connection.</p>
+
+    <p>This separation is powerful: it allows spatial structure and communication topology to vary independently.</p>
+
+    <!-- Placeholder: Spine code example showing bigraph-style nesting and linking -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>The Asset System in Space</h2>
+
+    <p>Let's extend our example.</p>
+
+    <p>We model a system with multiple locations:</p>
+
+    <ul>
+      <li>A <strong>warehouse</strong> containing physical assets</li>
+      <li>A <strong>registry</strong> containing ownership records</li>
+      <li>An <strong>office</strong> containing agents who initiate transfers</li>
+    </ul>
+
+    <p>Each location is a container. Facts within a container are local to it: the warehouse knows what physical assets it holds, the registry knows who owns what.</p>
+
+    <p>A transfer involves coordination: the registry updates ownership while the warehouse prepares the asset for movement. These are processes in different locations, communicating across a boundary.</p>
+
+    <!-- Placeholder: Spine code example showing spatially distributed Asset System -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Locality and Scope</h2>
+
+    <p>Spatial structure introduces a natural notion of <strong>scope</strong>.</p>
+
+    <p>Facts inside a container are local by default. They are not visible outside unless explicitly shared. A process inside a region can access local facts, but reaching across a boundary requires communication.</p>
+
+    <p>This is different from the context-based scoping we introduced earlier. Context determines <em>which rules apply</em>. Locality determines <em>what is accessible</em>.</p>
+
+    <p>Both shape the system, but they operate on different dimensions.</p>
+
+    <h2>Movement and Reconfiguration</h2>
+
+    <p>In static systems, structure is fixed. But real systems change shape.</p>
+
+    <p>An asset moves from one warehouse to another. An agent moves between offices. A service migrates from one server to another.</p>
+
+    <p>These are not just changes in facts — they are changes in <strong>spatial structure</strong>. The nesting of things inside containers changes. The boundaries shift.</p>
+
+    <p>In Spine, movement is an explicit operation that restructures the spatial layout of the system. The type system tracks what has moved, ensuring that references remain valid and that invariants about containment are preserved.</p>
+
+    <h2>Processes in Space</h2>
+
+    <p>Spatial structure interacts naturally with processes.</p>
+
+    <p>A process operates <em>somewhere</em>. Its location determines what it can directly access and who it can communicate with.</p>
+
+    <p>Two processes in the same container may share local state. Two processes in different containers must communicate through explicit channels that cross the boundary.</p>
+
+    <p>This gives the system a richer notion of concurrency: not just multiple behaviors happening simultaneously, but multiple behaviors happening in different places, coordinating across spatial structure.</p>
+
+    <h2>Adjacency and Proximity</h2>
+
+    <p>Containment is not the only spatial relationship.</p>
+
+    <p>Agents may be <strong>adjacent</strong> — in neighboring locations, able to interact directly. Locations may have <strong>proximity</strong> relationships that affect what actions are possible.</p>
+
+    <p>For example: a physical transfer may only be possible between adjacent warehouses. An emergency protocol may require a local responder — someone in the same region.</p>
+
+    <p>These relationships are part of the spatial model, not encoded as ad-hoc conditions.</p>
+
+    <h2>Connecting to Invariants</h2>
+
+    <p>Spatial structure creates new kinds of invariants:</p>
+
+    <ul>
+      <li>An asset must be in exactly one location at any time</li>
+      <li>A secure container must not have uncontrolled communication links to the outside</li>
+      <li>Certain agents must remain co-located with the assets they manage</li>
+    </ul>
+
+    <p>These are spatial invariants — properties about the structure of containment and connectivity, not just about the values of facts.</p>
+
+    <p>Because spatial structure is explicit in Spine, these invariants can be stated, checked, and enforced alongside the logical invariants we introduced earlier.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>With spatial structure in place, the system gains its final geometric dimension.</p>
+
+    <p>We no longer describe just what is true, how it changes, and who acts. We describe <strong>where</strong> everything is — and how the structure of space shapes behavior, access, and interaction.</p>
+
+    <p>This extends the earlier discussion of time and uncertainty into a full picture: systems that evolve in time, vary across locations, support concurrent processes, and maintain spatial invariants throughout.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We have now covered the major dimensions of Spine systems: facts, rules, effects, invariants, context, time, uncertainty, processes, and space.</p>
+
+    <p>In the next post, we will add another crucial dimension: <strong>resource tracking</strong> — the idea that some facts are consumed on use, and that the type system can enforce this discipline at compile time.</p>
+
+    <div class="post-nav">
+      <a href="09-processes-and-concurrent-behavior.html">← Previous: Processes and Concurrent Behavior</a>
+      <a href="11-resources-and-ownership.html">Next: Resources and Ownership →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Small Spine Program – Spine</title>
+  <meta name="description" content="From facts to rules — describing valid transitions in the Asset System.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="A Small Spine Program – Spine">
+  <meta property="og:description" content="From facts to rules — describing valid transitions in the Asset System.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/03-a-small-spine-program.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="A Small Spine Program – Spine">
+  <meta name="twitter:description" content="From facts to rules — describing valid transitions in the Asset System.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/03-a-small-spine-program.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "A Small Spine Program",
+    "description": "From facts to rules \u2014 describing valid transitions in the Asset System.",
+    "url": "https://spine-lang.org/articles/03-a-small-spine-program.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 3
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>A Small Spine Program</h1>
+      <div class="meta">Post 3 · Phase 1 — First Example</div>
+    </header>
+
+    <p>In the previous post, we introduced facts as the foundation of a system: an agent owns an asset, an asset is part of another asset.</p>
+
+    <p>These statements describe what can be true. They define the structure of the problem.</p>
+
+    <p>But real systems are not static.</p>
+
+    <p>Ownership changes. Permissions evolve. Assets move between contexts.</p>
+
+    <p>To model this, we need a way to describe not just what is true, but how truth itself can change.</p>
+
+    <h2>From Facts to Transitions</h2>
+
+    <p>Let's return to a concrete statement:</p>
+
+    <blockquote>Alice owns a car registered as VIN 12345.</blockquote>
+
+    <p>Previously, we expressed this as a fact: <code>Owns(Alice, Car_VIN12345)</code>.</p>
+
+    <p>Now consider a change: Alice transfers this car to Bob.</p>
+
+    <p>In most programming languages, this would be implemented as a mutation — update a field, change a database record.</p>
+
+    <p>But this approach focuses on <em>how</em> the change is performed, not on <em>what</em> the change means.</p>
+
+    <h2>Describing Change</h2>
+
+    <p>In Spine, we take a different approach.</p>
+
+    <p>Instead of describing steps, we describe conditions:</p>
+
+    <ul>
+      <li>What must be true <strong>before</strong> a change</li>
+      <li>What must be true <strong>after</strong> a change</li>
+    </ul>
+
+    <p>For ownership transfer, this becomes:</p>
+
+    <ul>
+      <li>Requires: Alice owns the car</li>
+      <li>Ensures: Bob owns the car</li>
+      <li>Ensures: Alice no longer owns the car</li>
+    </ul>
+
+    <p>This is not an implementation. It is a description of a valid transition.</p>
+
+    <p>In Spine's controlled natural language syntax, this looks like:</p>
+
+<pre><code>TransferOwnership emits OwnershipChange.
+TransferOwnership requires that the from_agent owns the asset.
+TransferOwnership requires that the from_agent has capability CanTransfer.
+TransferOwnership ensures that the to_agent owns the asset.
+TransferOwnership ensures that the from_agent no longer owns the asset.</code></pre>
+
+    <p>Each line reads like a sentence, but it is a formal declaration. The compiler knows exactly what <code>requires</code> and <code>ensures</code> mean — they are preconditions and postconditions, not comments.</p>
+
+    <h2>Rules as First-Class Elements</h2>
+
+    <p>We can think of this as a rule:</p>
+
+    <blockquote>Ownership can be transferred from one agent to another, provided certain conditions hold.</blockquote>
+
+    <p>This rule is defined in terms of facts: it consumes existing facts (ownership) and produces new facts (updated ownership).</p>
+
+    <p>Importantly, it does not say <em>how</em> to perform the transfer. It defines <em>what a valid transfer is</em>.</p>
+
+    <h2>The Asset System, Evolving</h2>
+
+    <p>Our running example now has two layers:</p>
+
+    <ul>
+      <li><strong>Structure (facts):</strong> <code>Owns(Agent, Asset)</code>, <code>PartOf(Asset, Asset)</code></li>
+      <li><strong>Behavior (rules):</strong> Transfer ownership</li>
+    </ul>
+
+    <p>This separation is intentional.</p>
+
+    <p>Facts describe states of the world. Rules describe valid transitions between states.</p>
+
+    <h2>Valid States, Valid Transitions</h2>
+
+    <p>Earlier, we introduced constraints such as: an asset has at most one owner.</p>
+
+    <p>Now we can see how rules interact with those constraints.</p>
+
+    <p>A valid rule must start from a valid state and produce another valid state. This is a genuinely hard problem — there may be constraints that are not obviously affected by a transition. For example, a constraint might say "no person may own more than five cars" — the transfer rule itself doesn't violate single ownership, but it might push the recipient over a limit defined elsewhere in the system.</p>
+
+    <p>For example, a transfer rule must not result in multiple owners or no owner at all.</p>
+
+    <p>This means: rules are not arbitrary — they are constrained by the structure of the system.</p>
+
+    <h2>Why This Matters</h2>
+
+    <p>This way of describing behavior has several consequences.</p>
+
+    <h3>Clarity</h3>
+    <p>The intent of a rule is explicit — no hidden mutations, no implicit assumptions.</p>
+
+    <h3>Composability</h3>
+    <p>Rules can be combined and extended: delegation, partial transfers, conditional permissions — all defined in terms of facts.</p>
+
+    <h3>Reasoning</h3>
+    <p>Because rules are declarative, we can ask: Is a transfer always valid? Can invalid states be reached? Do all transitions preserve constraints?</p>
+
+    <p>These questions are difficult to answer when behavior is encoded as arbitrary code.</p>
+
+    <h2>Not an Implementation (Yet)</h2>
+
+    <p>At this stage, something important is missing.</p>
+
+    <p>We have facts, rules, and constraints. But we do not yet have execution, side effects, or interaction with the outside world.</p>
+
+    <p>That is intentional.</p>
+
+    <p>We are still describing <em>what changes are allowed</em> — not yet <em>how those changes are carried out</em>.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>This introduces another shift in perspective: from writing procedures to describing valid transformations of a system.</p>
+
+    <p>Instead of asking <em>"What steps should the program take?"</em>, we ask <em>"What must be true before and after any change?"</em></p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>In the next post, we will take the next step: introducing effects, connecting rules to actual operations, and making explicit what a system is allowed to do.</p>
+
+    <p>This is where behavior becomes not just described, but structured and constrained as part of the language itself.</p>
+
+    <p>And as before, facts remain central: they are the foundation that both rules and effects build upon.</p>
+
+    <div class="post-nav">
+      <a href="02-facts-as-first-class-citizens.html">← Previous: Facts as First-Class Citizens</a>
+      <a href="04-effects-as-system-semantics.html">Next: Effects as System Semantics →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Facts as First-Class Citizens – Spine</title>
+  <meta name="description" content="Why facts — not data structures — should be the foundation of system modeling.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Facts as First-Class Citizens – Spine">
+  <meta property="og:description" content="Why facts — not data structures — should be the foundation of system modeling.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/02-facts-as-first-class-citizens.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Facts as First-Class Citizens – Spine">
+  <meta name="twitter:description" content="Why facts — not data structures — should be the foundation of system modeling.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/02-facts-as-first-class-citizens.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Facts as First-Class Citizens",
+    "description": "Why facts \u2014 not data structures \u2014 should be the foundation of system modeling.",
+    "url": "https://spine-lang.org/articles/02-facts-as-first-class-citizens.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 2
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Facts as First-Class Citizens</h1>
+      <div class="meta">Post 2 · Phase 1 — Facts</div>
+    </header>
+
+    <p>Most programming languages start with data structures.</p>
+
+    <p>We define classes, structs, records — and then write functions that manipulate them.</p>
+
+    <p>This works well for computation. But when we try to model a real-world domain, something subtle breaks down.</p>
+
+    <h2>The Shape of a Domain</h2>
+
+    <p>Consider a simple statement:</p>
+
+    <blockquote>Alice owns a car.</blockquote>
+
+    <p>In most programming languages, this becomes something like a field on an object, a row in a database, or a key-value relationship.</p>
+
+    <p>But these representations hide something important: the fact itself is not first-class.</p>
+
+    <p>It is encoded indirectly — as a mutable field, as a database entry, as an implicit assumption in code.</p>
+
+    <p>And because of that, we lose clarity, composability, and the ability to reason about the domain directly.</p>
+
+    <h2>A Different Starting Point</h2>
+
+    <p>Approaches like <a href="https://www.orm.net/">Object-Role Modeling</a> (ORM2) take a different view.</p>
+
+    <p>Instead of starting with objects and attributes, they start with facts:</p>
+
+    <ul>
+      <li>Person owns Car</li>
+      <li>Car is part of Fleet</li>
+      <li>Employee works in Department</li>
+    </ul>
+
+    <p>Facts are explicit, structured, and close to how we naturally describe systems.</p>
+
+    <p>This makes them easier to validate with domain experts, reason about, and evolve over time.</p>
+
+    <h2>From Modeling to Programs</h2>
+
+    <p>Spine takes inspiration from this perspective, but explores a different direction.</p>
+
+    <p>What happens if facts are not just part of a model, but part of a program?</p>
+
+    <p>In Spine, facts are not just documentation or schema. They are elements that can be declared, composed, constrained, and used directly in defining system behavior.</p>
+
+    <h2>The Asset System</h2>
+
+    <p>To make this concrete, we will use a simple running example throughout these posts: <strong>the Asset System</strong>.</p>
+
+    <p>At its core, it describes relationships between agents and assets.</p>
+
+    <p>We might start with facts like:</p>
+
+    <ul>
+      <li>Agent exists</li>
+      <li>Asset exists</li>
+      <li>Agent owns Asset</li>
+      <li>Asset is part of another Asset</li>
+    </ul>
+
+    <p>These are not yet actions or computations. They are simply statements about what can be true in the system.</p>
+
+    <!-- Placeholder: Spine code example for basic fact declarations -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Facts Before State</h2>
+
+    <p>In many systems, we would model ownership as a field:</p>
+
+    <pre><code>asset.owner = agent</code></pre>
+
+    <p>But this introduces several issues: ownership becomes tied to a specific representation, constraints are implicit, and changes are modeled as mutations.</p>
+
+    <p>In a fact-based approach, we instead express:</p>
+
+    <pre><code>Owns(Agent, Asset)</code></pre>
+
+    <p>This may seem like a small shift, but it has important consequences:</p>
+
+    <ul>
+      <li>Ownership is no longer hidden inside a structure</li>
+      <li>It becomes something we can reason about directly</li>
+      <li>It can participate in constraints and rules</li>
+    </ul>
+
+    <h2>Constraints as Part of the Model</h2>
+
+    <p>Once facts are explicit, constraints become natural.</p>
+
+    <p>For example:</p>
+
+    <ul>
+      <li>An asset has at most one owner</li>
+      <li>Part-of relationships do not form cycles</li>
+    </ul>
+
+    <p>These are not comments or external validations. They are part of the system itself. They define what it means for a state of the system to be valid.</p>
+
+    <h2>Composability of Facts</h2>
+
+    <p>Because facts are first-class, they can be combined and extended.</p>
+
+    <p>We might later introduce:</p>
+
+    <ul>
+      <li><code>Control(Agent, Asset)</code></li>
+      <li><code>DelegatedAccess(Agent, Asset)</code></li>
+    </ul>
+
+    <p>These can relate to existing facts: ownership may imply control, delegation may depend on ownership.</p>
+
+    <p>The important point is: we are building a network of relationships, not a hierarchy of objects.</p>
+
+    <h2>Toward Behavior</h2>
+
+    <p>So far, we have only described structure: what exists, what relationships can hold, what constraints apply.</p>
+
+    <p>But systems do not stand still. They evolve.</p>
+
+    <p>Ownership can change. Assets can move. Permissions can be granted or revoked.</p>
+
+    <p>In the next step, we will introduce rules that describe how facts can change — and how valid states of the system transition into other valid states.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>At first glance, treating facts as first-class elements may seem like a small change.</p>
+
+    <p>In practice, it shifts the perspective from manipulating data structures to describing systems in terms of what is true about them.</p>
+
+    <p>This shift will allow us to define behavior in terms of constraints, make effects explicit, and eventually reason about entire systems.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>In the next post, we will extend the Asset System with simple rules: how ownership can be transferred, and what must hold before and after such a change.</p>
+
+    <p>This will move us from describing a system to describing how it evolves.</p>
+
+    <p>And as we do so, the role of facts will become even more central: they are not just data — they are the foundation on which everything else is built.</p>
+
+    <div class="post-nav">
+      <a href="01-programming-reality.html">← Previous: Programming Reality</a>
+      <a href="03-a-small-spine-program.html">Next: A Small Spine Program →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

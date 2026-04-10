@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Migration Oracle – Spine</title>
+  <meta name="description" content="Specify legacy behavior in Spine before rewriting. The executable becomes the oracle — migration is complete when the new system matches the spec.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Migration Oracle – Spine">
+  <meta property="og:description" content="Specify legacy behavior in Spine before rewriting. The executable becomes the oracle — migration is complete when the new system matches the spec.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/use-cases/migration-oracle.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Migration Oracle – Spine">
+  <meta name="twitter:description" content="Specify legacy behavior in Spine before rewriting. The executable becomes the oracle — migration is complete when the new system matches the spec.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/use-cases/migration-oracle.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Migration Oracle",
+    "description": "Specify legacy behavior in Spine before rewriting. The executable becomes the oracle — migration is complete when the new system matches the spec.",
+    "url": "https://spine-lang.org/use-cases/migration-oracle.html",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    }
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="index.html" class="active">Use Cases</a>
+      <a href="../articles/index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Migration Oracle</h1>
+      <div class="meta">Use Cases · Existing Systems</div>
+    </header>
+
+    <h2>The Problem</h2>
+
+    <p>You are rewriting a legacy system. Mainframe to cloud. Monolith to microservices. Microservices back to a modular monolith. One vendor platform to another. The stakes are high and the deadline is real.</p>
+
+    <p>The fundamental question of any migration is: does the new system do what the old one did? But the old system's behavior is defined only by its code — code that nobody fully understands, in a language that fewer people read each year, with undocumented behaviors that users have come to depend on.</p>
+
+    <p>Migration projects typically rely on test suites written against the old system. But those tests were written by people who understood the old system at the time. They cover the known cases. The unknown cases — the ones that will cause production incidents after migration — remain unknown.</p>
+
+    <p>This is why large migrations fail, often silently. The new system passes the tests and diverges in behavior.</p>
+
+    <h2>The Approach</h2>
+
+    <p>Before rewriting, write a Spine specification of the old system's behavior. This is closely related to the digital twin scenario, but the intent is different. You are not creating a long-term companion to the production system. You are creating a migration oracle — a reference that will tell you when the new system is done.</p>
+
+    <p>The specification captures the rules, not the implementation. It describes what the system does in terms of facts, constraints, and effects. The process of writing it forces the same rigorous examination of behavior as the digital twin — and surfaces the same inconsistencies.</p>
+
+    <p>Once the specification compiles and the Spine executable matches the old system's behavior (verified through A/B testing), you have your oracle.</p>
+
+    <h2>The Outcome</h2>
+
+    <p>The migration has a definition of done: the new system matches the oracle.</p>
+
+    <ul>
+      <li><strong>Objective acceptance criteria</strong> — the oracle defines correct behavior. The new system is tested against it, not against human judgment or incomplete test suites.</li>
+      <li><strong>Incremental migration</strong> — as each module of the new system is built, it can be tested against the corresponding part of the oracle. You know where you stand at every point.</li>
+      <li><strong>Behavior documentation</strong> — the specification is a precise, verified record of what the old system did. When the migration is complete, it remains as documentation.</li>
+    </ul>
+
+    <p>The development team builds the new system in whatever stack they choose. The oracle does not constrain their architecture. It only constrains their output.</p>
+
+    <h2>The Workflow</h2>
+
+    <blockquote>
+      <p>Legacy System → Specification in Spine → Compile → Migration Oracle → A/B Test Against Legacy</p>
+    </blockquote>
+
+    <p>Then, during migration:</p>
+
+    <blockquote>
+      <p>New System (in Progress) → A/B Test Against Oracle → Iterate Until Match</p>
+    </blockquote>
+
+    <p>The legacy system can be decommissioned once the new system consistently matches the oracle. The oracle itself remains as the verified specification of correct behavior.</p>
+
+    <h2>Why This Works</h2>
+
+    <p>Migrations fail because "does the same thing" is undefined. The oracle makes it defined. Not as a list of test cases, but as a verified specification of behavior.</p>
+
+    <p>Test suites check scenarios someone thought of. The oracle embodies the complete set of rules. When the new system diverges from the oracle, the specification tells you exactly which rule is violated — not just which test failed, but why.</p>
+
+    <p>The oracle is also stack-independent. Whether the new system is Java, Go, Rust, or a cloud-native service mesh, it can be compared against the same reference. The oracle does not care how the system is built, only what it does.</p>
+
+    <nav class="post-nav">
+      <a href="regulatory-compliance.html">&larr; Regulatory Compliance</a>
+      <a href="spec-first.html">Spec-First Development &rarr;</a>
+    </nav>
+
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

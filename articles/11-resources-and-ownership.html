@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resources and Ownership – Spine</title>
+  <meta name="description" content="How Spine tracks resource usage through Quantitative Type Theory — linear facts, consumption, and compile-time accounting.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Resources and Ownership – Spine">
+  <meta property="og:description" content="How Spine tracks resource usage through Quantitative Type Theory — linear facts, consumption, and compile-time accounting.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://spine-lang.org/articles/11-resources-and-ownership.html">
+  <meta property="og:site_name" content="Spine">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Resources and Ownership – Spine">
+  <meta name="twitter:description" content="How Spine tracks resource usage through Quantitative Type Theory — linear facts, consumption, and compile-time accounting.">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://spine-lang.org/articles/11-resources-and-ownership.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Resources and Ownership",
+    "description": "How Spine tracks resource usage through Quantitative Type Theory \u2014 linear facts, consumption, and compile-time accounting.",
+    "url": "https://spine-lang.org/articles/11-resources-and-ownership.html",
+    "inLanguage": "en",
+    "isPartOf": {
+        "@type": "Blog",
+        "name": "Building Spine",
+        "url": "https://spine-lang.org/articles/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Spine",
+        "url": "https://spine-lang.org"
+    },
+    "position": 11
+}
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../img/spine-logo.svg" alt="" class="logo-img">Spine</a>
+    <nav>
+      <a href="../use-cases/index.html">Use Cases</a>
+      <a href="index.html">Articles</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../ai.html">AI</a>
+      <a href="../governance/index.html">Governance</a>
+      <a href="https://discord.gg/wAAx6GMj" class="nav-discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="container">
+    <header>
+      <h1>Resources and Ownership</h1>
+      <div class="meta">Post 11 · Phase 2 — Resources</div>
+    </header>
+
+    <p>So far, we have introduced facts, rules, effects, invariants, context, time, space, uncertainty, processes, and spatial structure.</p>
+
+    <p>These give us a rich language for modeling systems.</p>
+
+    <p>But there is a concept we have used informally without making it precise: <em>some things can only be used once.</em></p>
+
+    <h2>Not All Facts Are Equal</h2>
+
+    <p>Consider our Asset System.</p>
+
+    <p>We have the fact: <code>Owns(Alice, Painting)</code>.</p>
+
+    <p>When Alice transfers the painting to Bob, the system transitions to <code>Owns(Bob, Painting)</code>.</p>
+
+    <p>But what happened to the original fact? It was not just updated — it was <strong>consumed</strong>. Alice no longer owns the painting. The old fact is gone, and a new fact takes its place.</p>
+
+    <p>This is different from a fact like <em>"the painting is oil on canvas."</em> That fact persists regardless of who owns the painting. It can be observed freely, by anyone, at any time.</p>
+
+    <p>These two kinds of facts behave fundamentally differently. The first is a <strong>resource</strong> — it is consumed when used. The second is <strong>persistent</strong> — it can be shared without limit.</p>
+
+    <h2>The Problem of Duplication</h2>
+
+    <p>In most programming languages, values can be freely copied. A variable holding an ownership record can be duplicated, passed to multiple functions, and referenced from multiple places.</p>
+
+    <p>This creates a subtle but important class of errors:</p>
+
+    <ul>
+      <li>An ownership token is used twice, causing a double transfer</li>
+      <li>A permission is consumed but still referenced elsewhere</li>
+      <li>A one-time credential is accidentally shared</li>
+    </ul>
+
+    <p>These are not logic errors in the traditional sense. They are <strong>resource errors</strong> — violations of the constraint that certain things should be used exactly once.</p>
+
+    <h2>Three Modes of Use</h2>
+
+    <p>Spine addresses this through a concept from <strong><a href="https://bentnib.org/quantitative-type-theory.html">Quantitative Type Theory</a></strong>: every binding carries an annotation describing how it may be used.</p>
+
+    <p>There are three modes:</p>
+
+    <ul>
+      <li><strong>Linear (1)</strong> — must be used exactly once. Once consumed, it is gone.</li>
+      <li><strong>Unrestricted (ω)</strong> — may be used any number of times. This is the familiar default in most languages.</li>
+      <li><strong>Erased (0)</strong> — exists only at compile time. Used for type information, proofs, and specifications that have no runtime presence.</li>
+    </ul>
+
+    <p>These are not ad-hoc markers. They are part of the type system itself, checked at compile time.</p>
+
+    <!-- Placeholder: Spine code example showing quantity annotations on bindings -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Resources in the Asset System</h2>
+
+    <p>Let's return to ownership.</p>
+
+    <p>In Spine, the fact <code>Owns(Alice, Painting)</code> is a linear resource. The transfer rule consumes this fact and produces a new one: <code>Owns(Bob, Painting)</code>.</p>
+
+    <p>Because it is linear, the type system enforces that the original fact cannot be used again after the transfer. There is no way to accidentally create two owners.</p>
+
+    <p>Compare this with a fact like <code>Medium(Painting, Oil)</code>. This is unrestricted — it can be read, shared, and referenced without affecting the system's state.</p>
+
+    <!-- Placeholder: Spine code example showing linear vs unrestricted facts in the Asset System -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Connecting to Effects</h2>
+
+    <p>Resource tracking integrates naturally with the effect system.</p>
+
+    <p>An effect that consumes a resource must account for it. An effect that produces a resource must ensure it is eventually consumed or explicitly discarded.</p>
+
+    <p>This creates a discipline: effects are not only constrained by rules and invariants — they are also constrained by <strong>resource accounting</strong>.</p>
+
+    <p>For example: the <code>TransferOwnership</code> effect consumes one ownership fact and produces another. The type system ensures that these balance.</p>
+
+    <h2>Connecting to Invariants</h2>
+
+    <p>In earlier posts, we introduced the invariant that an asset has at most one owner.</p>
+
+    <p>With resource tracking, this invariant is not just checked — it is <strong>structurally enforced</strong>.</p>
+
+    <p>A linear ownership fact cannot be duplicated. Therefore, two ownership facts for the same asset cannot coexist. The invariant holds not because we test for it, but because the type system makes violation impossible.</p>
+
+    <p>This is a significant property: certain invariants become consequences of resource discipline rather than separate proof obligations.</p>
+
+    <h2>Erased Information</h2>
+
+    <p>The third mode — erased — plays a different role.</p>
+
+    <p>Some information exists only to help the compiler verify correctness. It has no runtime presence and no cost.</p>
+
+    <p>For example: a proof that a transfer is valid, type-level evidence that a constraint holds, or specification metadata used during verification.</p>
+
+    <p>In Spine, this information can participate in type checking and reasoning without affecting the generated code.</p>
+
+    <!-- Placeholder: Spine code example showing erased bindings used for compile-time proofs -->
+    <!-- The coding agent can insert actual Spine syntax here -->
+
+    <h2>Why Not Just Rust?</h2>
+
+    <p><a href="https://www.rust-lang.org/">Rust</a> introduced ownership and borrowing to mainstream programming, and demonstrated that resource tracking can prevent real bugs.</p>
+
+    <p>Spine's approach differs in important ways.</p>
+
+    <p>Rust's ownership model is primarily about memory safety — preventing use-after-free, data races, and memory leaks.</p>
+
+    <p>Spine's resource tracking is about <strong>semantic resources</strong>: ownership of assets, consumption of permissions, use of capabilities, and any domain concept where "used exactly once" is meaningful.</p>
+
+    <p>The mechanism is also different. Rust uses affine types — values may be used <em>at most</em> once — enforced by a borrow checker. Spine uses Quantitative Type Theory — values are used <em>exactly</em> the number of times their annotation permits — integrated into the dependent type system, which allows richer reasoning about resource flow.</p>
+
+    <h2>A Subtle Shift</h2>
+
+    <p>With resource tracking in place, the system gains a new dimension.</p>
+
+    <p>Not only do we describe what is true and how truth changes — we describe <strong>how many times</strong> each piece of truth may be used.</p>
+
+    <p>This shifts the perspective once more: from systems where values are freely available, to systems where resources are tracked, consumed, and accounted for.</p>
+
+    <p>This is not about restriction for its own sake. It is about making the system's assumptions explicit — and letting the type system enforce them.</p>
+
+    <h2>Looking Ahead</h2>
+
+    <p>We now have an even richer foundation: facts, rules, effects, invariants, context, time, space, uncertainty, processes, spatial structure, and resources.</p>
+
+    <p>Resource tracking connects to many of the ideas introduced earlier. It strengthens invariants, constrains effects, gives facts a notion of lifetime, and disciplines how processes exchange values across spatial boundaries.</p>
+
+    <p>In the next post, we will give structure to the idea of context itself — formalizing the layered interpretations we have been using informally into something precise: <strong>universes</strong>.</p>
+
+    <div class="post-nav">
+      <a href="10-spatial-structure-and-locality.html">← Previous: Spatial Structure and Locality</a>
+      <a href="12-universes-as-context.html">Next: Universes as Context →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="https://discord.gg/wAAx6GMj">Discord</a> · &copy; 2026 Spine. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>
